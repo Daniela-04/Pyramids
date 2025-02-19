@@ -187,7 +187,7 @@ export { Server, Game, Player, Admin, Pyramid, Map, WebSocketHandler };
 
 ## clases
 
-``js
+```js
 
 class GameManager {
   constructor() {
