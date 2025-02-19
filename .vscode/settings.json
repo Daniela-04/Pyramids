@@ -1,0 +1,10 @@
+{
+    "editor.codeActionsOnSave": {
+        "source.fixAll": "always"
+    },
+    "standard.engine": "semistandard",
+    "standard.validate": [
+        "javascript",
+        "javascriptreact"
+    ],
+}
