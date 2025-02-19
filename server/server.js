@@ -6,14 +6,31 @@ import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-export const publicPath = path.join(__dirname, '../client');
 
-const app = express();
+export class Server {
+  static app = express();
+  static publicPath = path.join(__dirname, '../client');
 
-app.use(express.static(publicPath));
+  static init () {
+    this.configureMiddleware();
+    this.configureRoutes();
+    this.start();
+  }
 
-app.use('/', router);
+  static configureMiddleware () {
+    this.app.use(express.static(this.publicPath));
+  }
 
-app.listen(configs.port, configs.host, () => (
-  console.log(`Servidor corriendo en http://${configs.host}:${configs.port}`)
-));
+  static configureRoutes () {
+    this.app.use('/', router);
+  }
+
+  static start () {
+    this.app.listen(configs.port, configs.host, () => {
+      console.log(`Servidor corriendo en http://${configs.host}:${configs.port}`);
+    });
+  }
+}
+
+// Ejecutar el servidor
+Server.init();
