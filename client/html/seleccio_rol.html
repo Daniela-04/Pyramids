@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/reset.css">
+    <link rel="stylesheet" href="../css/seleccio.css">
+    <title>Document</title>
+</head>
+<body>
+    <div class="body_container">
+        <!-- Boton de retorno-->
+        <button id="cerrarSesionButton" class="button">
+            <div class="shadow"></div>
+            <div class="edge"></div>
+            <div class="front">
+                <span>Cerrar Sesion</span>
+            </div>
+        </button>
+        <!-- Titulo de seleccion de rol-->
+        <h1>Selecciona el rol que quieres jugar</h1>
+        <!-- Cartas con boton para seleccionar el rol-->
+        <div class="cartas">
+            <div class="container">
+                <a href="/admin">
+                    <div class="card_box">
+                        <span></span>
+                        <img src="../assets/img/fotoAdmin.png" alt="player">
+                    </div>
+                </a>
+            </div>
+            <div class="container">
+                <a href="/player">
+                    <div class="card_box card__box_player">
+                        <span></span>
+                        <img src="../assets/img/fotoPlayer.png" alt="player">
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+    <script src="../js/seleccio.js"></script>
+</body>
+</html>

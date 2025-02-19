@@ -1,0 +1,192 @@
+/*Estilo para la pagina*/
+.body_container {
+    height: 100vh;
+    display: grid;
+    place-items: center;
+    grid-template-rows: auto 1fr;
+    background-image: url(../assets/img/fondo.jpg);
+    background-repeat: no-repeat; /* Evitar que el fondo se repita */
+    background-size: cover; /* Asegurar que el fondo cubra toda la pantalla */
+}
+
+/*Estilo titulo*/
+h1 {
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem; /* Tamaño de fuente */
+    color: #fff; /* Color del texto blanco */
+    text-align: center; /* Alineación del texto */
+    margin-bottom: 1rem; /* Espacio inferior */
+    margin-top: 5rem; /* Espacio superior */
+    font-family: 'Arial', sans-serif; /* Familia de fuente */
+    text-transform: uppercase; /* Transformar texto a mayúsculas */
+    letter-spacing: 0.1em; /* Espaciado entre letras */
+    font-weight: bold; /* Grosor de la fuente */
+    text-shadow: 2px 2px 6px #000; /* Sombra negra para el texto */
+}
+
+/*Estilo para el boton de Return*/
+/*Estilo para el boton de Return*/
+.button {
+    position: absolute; /* Change to absolute */
+    top: 20px; /* Adjust as needed */
+    left: 20px; /* Adjust as needed */
+    border: none;
+    background: transparent;
+    padding: 0;
+    outline: none;
+    cursor: pointer;
+    font-family: sans-serif;
+}
+
+/* Shadow layer */
+.button .shadow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: 8px;
+    transform: translateY(2px);
+    transition: transform 600ms cubic-bezier(0.3, 0.7, 0.4, 1);
+}
+
+/* Edge layer */
+.button .edge {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    background: linear-gradient(
+        to left,
+        hsl(217, 33%, 16%) 0%,
+        hsl(217, 33%, 32%) 8%,
+        hsl(217, 33%, 32%) 92%,
+        hsl(217, 33%, 16%) 100%
+    );
+}
+
+/* Front layer */
+.button .front {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 28px;
+    font-size: 1.25rem;
+    color: white;
+    background: hsl(217, 33%, 17%);
+    border-radius: 8px;
+    transform: translateY(-4px);
+    transition: transform 600ms cubic-bezier(0.3, 0.7, 0.4, 1);
+}
+
+/* Hover and active states */
+.button:hover .shadow {
+    transform: translateY(4px);
+    transition: transform 250ms cubic-bezier(0.3, 0.7, 0.4, 1.5);
+}
+
+.button:hover .front {
+    transform: translateY(-6px);
+    transition: transform 250ms cubic-bezier(0.3, 0.7, 0.4, 1.5);
+}
+
+.button:active .shadow {
+    transform: translateY(1px);
+    transition: transform 34ms;
+}
+
+.button:active .front {
+    transform: translateY(-2px);
+    transition: transform 34ms;
+}
+
+/* Disable text selection */
+.button .front span {
+    user-select: none;
+}
+
+/*Estilo para las cartas de seleccion*/
+.cartas {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+    justify-content: center;
+}
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+.card_box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 400px;
+    height: 450px;
+    border-radius: 20px;
+    background: linear-gradient(170deg, rgba(58, 56, 56, 0.623) 0%, rgb(31, 31, 31) 100%);
+    position: relative;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.55);
+    cursor: pointer;
+    transition: all .3s;
+}
+  
+  .card_box:hover {
+    transform: scale(0.9);
+  }
+  
+  .card_box span {
+    position: absolute;
+    overflow: hidden;
+    width: 150px;
+    height: 150px;
+    top: -10px;
+    left: -10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .card_box img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+} 
+  .card_box span::before {
+    content: 'Admin';
+    position: absolute;
+    width: 150%;
+    height: 40px;
+    background-image: linear-gradient(45deg, #ff6547 0%, #ffb144  51%, #ff7053  100%);
+    transform: rotate(-45deg) translateY(-20px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.23);
+  }
+
+  .card__box_player span::before {
+    content: 'Player';
+  }
+  
+  .card_box span::after {
+    content: '';
+    position: absolute;
+    width: 10px;
+    bottom: 0;
+    left: 0;
+    height: 10px;
+    z-index: -1;
+    box-shadow: 140px -140px #cc3f47;
+    background-image: linear-gradient(45deg, #FF512F 0%, #F09819  51%, #FF512F  100%);
+  }
