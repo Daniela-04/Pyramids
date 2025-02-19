@@ -2,6 +2,8 @@ import express from 'express';
 import configs from './configs.js';
 import router from './router.js';
 import path, { dirname } from 'path';
+import WebSocketHandler from './controllers/WebSocketHandler.js';
+import Game from './controllers/Game.js';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -19,6 +21,8 @@ export class Server {
 
   static configureMiddleware () {
     this.app.use(express.static(this.publicPath));
+    this.app.use(express.json());
+    this.app.use(express.urlencoded({ extended: true }));
   }
 
   static configureRoutes () {
@@ -29,6 +33,9 @@ export class Server {
     this.app.listen(configs.port, configs.host, () => {
       console.log(`Servidor corriendo en http://${configs.host}:${configs.port}`);
     });
+    // Iniciar el servidor WebSocket y el juego
+    WebSocketHandler.init();
+    Game.init();
   }
 }
 

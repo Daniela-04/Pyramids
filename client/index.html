@@ -14,12 +14,11 @@
 	<div class="container">
 		<div class="form__container">
 			<div class="heading">Iniciar sessió</div>
+			<div id="error" class="card card--shadow error" hidden>
+				<div class="card__content"></div>
+			</div>
 			<form id="login-form" class="form">
 				<input placeholder="E-mail" id="email" name="email" type="email" class="input" required="" />
-				<div id="error-card" class="card card--shadow error" hidden>
-					<div class="card__content"></div>
-					<div class="card__background"></div>
-				</div>
 				<input value="Iniciar sessió" type="submit" class="login-button" />
 			</form>
 		</div>

@@ -1,37 +1,31 @@
 document.getElementById('login-form').addEventListener('submit', async (e) => {
   e.preventDefault();
   const email = document.getElementById('email').value;
+  const errorContainer = document.getElementById('error');
+  const errorContent = document.querySelector('#error .card__content');
 
   if (email.endsWith('@sapalomera.cat') && email.length > 0) {
-    const formData = new FormData();
     try {
-      const response = fetch('/login',
+      const response = await fetch('/login',
         {
           method: 'POST',
-          body: formData
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email })
         });
+
       if (response.status === 200) {
         window.location.href = '/choose';
       } else {
-        const error = await response.error.text();
-        const errorElement = document.querySelector('#error-card .card__content');
-
-        const errorDiv = document.createElement('p');
-        errorDiv.classList.add('error');
-        errorDiv.textContent = error;
-        errorElement.appendChild(errorDiv);
+        const errorData = await response.json();
+        errorContent.textContent = errorData.error;
+        errorContainer.removeAttribute('hidden');
       }
     } catch (error) {
       console.log(error);
     }
   } else {
-    const errorDiv = document.createElement('p');
-    errorDiv.classList.add('error');
-    errorDiv.textContent = 'Dominio no permitido';
-    document.getElementById('error').appendChild(errorDiv);
+    const error = "Inicia amb l'email del sapa";
+    errorContent.textContent = error;
+    errorContainer.removeAttribute('hidden');
   }
 });
-
-document.getElementById('email').addEventListener('click', () => {});
-
-document.getElementById('error').addEventListener('click', function () {});

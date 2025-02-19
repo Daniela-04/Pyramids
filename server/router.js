@@ -1,7 +1,6 @@
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { IncomingForm } from 'formidable';
 import { AuthController } from './controllers/AuthController.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -38,15 +37,7 @@ export class RouterConfig {
 
   static configurePostRoutes () {
     this.router.post('/login', (req, res) => {
-      const form = new IncomingForm();
-
-      form.parse(req, (err, fields) => {
-        if (err) {
-          return res.status(400).json({ error: 'Error al procesar el formulario' });
-        }
-
-        AuthController.login(fields, res);
-      });
+      AuthController.login(req.body, res);
     });
   }
 }
