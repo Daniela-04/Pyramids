@@ -1,23 +1,38 @@
 <!DOCTYPE html>
 <html lang="ca">
+
 <head>
     <meta charset="UTF-8">
     <title>Pyramid (player)</title>
+    <link rel="stylesheet" href="../css/reset.css">
     <link rel="stylesheet" type="text/css" href="css/player.css">
-		<link rel="icon" href="favicon.ico" type="image/x-icon">
-		<script src="js/pyramid.js"></script>
-		<script defer src="js/player.js"></script>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <script src="js/pyramid.js"></script>
+    <script defer src="js/player.js"></script>
 </head>
+
 <body>
-	<div>
-		<label for="pisos">Pisos de la piràmide</label> <input type="number" id="pisos" step="1" value="8" min="4" max="8" disabled /><br>
-	</div>
-	<div>
-		<svg width="640" height="480" viewBox="0 0 640 480" style="border:1px solid black">
-			<g id="pyramid"></g>
-			<g id="players"></g>
-			<g id="stones"></g>
-		</svg>
-	</div>
+    <div class="body_container">
+        <button id="cerrarSesionButton" class="button">
+            <div class="shadow"></div>
+            <div class="edge"></div>
+            <div class="front">
+                <span>Cerrar Sesion</span>
+            </div>
+        </button>
+        <h1>P Y R A M I D S</h1>
+        <div class="recuadre__joc">
+            <svg width="640" height="480" viewBox="0 0 640 480" style="border:1px solid black">
+                <g id="pyramid"></g>
+                <g id="players"></g>
+                <g id="stones"></g>
+            </svg>
+        </div>
+				<div class="pisos__piramide_camp">
+					<p>Pisos de la piràmide</p>
+        	<input type="number" id="pisos" step="1" value="8" min="4" max="8" disabled /><br>
+				</div>
+		  </div>
 </body>
+<script src="../js/player.js"></script>
 </html>
