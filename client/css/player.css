@@ -29,6 +29,7 @@ h1 {
 
 /* Estilo para el recuadro del juego */
 .recuadre__joc {
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -45,7 +46,6 @@ h1 {
 /*Estilo para el recuadro de pisos de la piramide*/
 .pisos__piramide_camp {
   position: absolute;
-  top: 20%;
   left: 20px;
   transform: translateY(-50%);
   background-color: rgba(255, 255, 255, 0.8); /* Fondo blanco semi-transparente */
