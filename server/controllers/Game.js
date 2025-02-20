@@ -8,7 +8,7 @@ export class Game {
   constructor () {
     this.players = [];
     this.pyramid = new Pyramid();
-    this.map = null;
+    this.map = new Map();
     this.isRunning = false;
     this.interval = null;
   }
@@ -38,6 +38,7 @@ export class Game {
           this.map.stones.push(position);
           stonesGenerated++;
           WebSocketHandler.broadcast('bricks', this.map.stones);
+          console.log(this.map.stones);
         }
       } else {
         clearInterval(this.interval);
@@ -57,12 +58,10 @@ export class Game {
     const position = this.map.generateRandomPosition();
     player.setPosition(position.x, position.y);
     this.players.push(player);
-    console.log(this.players);
   }
 
   configureMap (settings) {
     this.map = new Map(settings.width, settings.height);
-    console.log('Mapa configurado:', settings);
   }
 
   removePlayer (playerId) {

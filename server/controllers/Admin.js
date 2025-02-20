@@ -9,7 +9,7 @@ export class Admin {
   }
 
   static startGame () {
-    console.log('Iniciando juego desde Admin');
+    // console.log('Iniciando juego desde Admin');
     if (!Game.map) {
       console.error('El mapa no está configurado');
       return;

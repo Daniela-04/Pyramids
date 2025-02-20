@@ -96,8 +96,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
-  max-width: 640px;
+  width: fit-content;
   padding: 20px;
   background-color: rgb(255, 255, 255);
   /* Fondo blanco semi-transparente */

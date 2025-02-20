@@ -22,13 +22,12 @@ export default class WebSocketHandler {
 
   static handleEvents (socket) {
     socket.on('iniciar', () => {
-      console.log('Admin inició el juego');
       this.#emitEvent('startGame');
       this.broadcast('gameStart', { message: 'El administrador ha iniciado el juego' });
     });
 
     socket.on('inicializeMap', (settings) => {
-      console.log('Admin configuró el mapa:', settings);
+      // console.log('Admin configuró el mapa:', settings);
       this.#emitEvent('configureGame', settings);
     });
 
@@ -37,7 +36,7 @@ export default class WebSocketHandler {
       if (role === 'player') {
         this.#emitEvent('join', socket.id, socket);
       }
-      console.log(this.#eventListeners);
+      // console.log(this.#eventListeners);
     });
 
     socket.on('move', (direction) => {
@@ -48,20 +47,7 @@ export default class WebSocketHandler {
       console.log(`Cliente ${socket.id} ha recogido un(a) ${item}`);
     });
 
-    socket.on('changeWidth', (width) => {
-      this.#emitEvent('changeWidth', socket, width);
-    });
-
-    socket.on('changeHeight', (height) => {
-      console.log(`Alto del mapa cambiado a ${height}`);
-    });
-
-    socket.on('changePisos', (pisos) => {
-      console.log(`Cantidad de pisos cambiada a ${pisos}`);
-    });
-
     socket.on('stopGame', () => {
-      console.log('Admin detuvo el juego');
       this.#emitEvent('stopGame');
       this.broadcast('gameStop', { message: 'El administrador ha detenido el juego' });
     });

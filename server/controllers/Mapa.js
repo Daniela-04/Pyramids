@@ -1,5 +1,6 @@
+import configs from '../configs.js';
 export default class Map {
-  constructor (width, height) {
+  constructor (width = configs.map.width, height = configs.map.height) {
     this.width = width;
     this.height = height;
     this.stones = [];
@@ -11,6 +12,7 @@ export default class Map {
       if (this.isPositionAvailable(position.x, position.y)) {
         this.stones.push(position);
       }
+      console.log(this.stones);
     }
   }
 
@@ -26,5 +28,25 @@ export default class Map {
     const x = Math.floor(Math.random() * (this.width - 20)); // Restamos 20 para el tamaño del ladrillo
     const y = Math.floor(Math.random() * (this.height - 20)); // Restamos 20 para el tamaño del ladrillo
     return { x, y };
+  }
+
+  setWidth (width) {
+    if (width >= configs.map.maxWidth && width <= configs.map.minWidth) {
+      this.width = width;
+    }
+  }
+
+  setHeight (height) {
+    if (height >= configs.map.maxHeight && height <= configs.map.minHeight) {
+      this.height = height;
+    }
+  }
+
+  getWidth () {
+    return this.width;
+  }
+
+  getHeight () {
+    return this.height;
   }
 }

@@ -1,6 +1,8 @@
 /* global alert */
 // eslint-disable-next-line no-undef
 const socket = io('http://localhost:8180');
+const svg = document.getElementById('gameMap');
+const pisos = document.getElementById('pisos');
 
 socket.emit('join', 'player');
 
@@ -41,11 +43,16 @@ socket.on('bricks', (bricks) => {
 // Añadir listener para el mensaje de inicio del juego
 socket.on('gameStart', (data) => {
   alert(data.message);
-  // También podrías crear un modal más elegante en lugar de usar alert
 });
 
 // Añadir listener para el mensaje de parada
 socket.on('gameStop', (data) => {
   alert(data.message);
-  // También podrías crear un modal más elegante en lugar de usar alert
+});
+
+socket.on('mapUpdated', (map) => {
+  svg.setAttribute('width', map.width);
+  svg.setAttribute('height', map.height);
+  svg.setAttribute('viewBox', `0 0 ${map.width} ${map.height}`);
+  pisos.value = map.pisos;
 });

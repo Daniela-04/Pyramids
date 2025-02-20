@@ -8,6 +8,7 @@ socket.emit('join', 'admin');
 const width = document.getElementById('width');
 const height = document.getElementById('height');
 const pisos = document.getElementById('pisos');
+const svg = document.getElementById('gameMap');
 
 // Configurar mapa
 document.querySelector('#configurar').addEventListener('click', (event) => {
@@ -47,4 +48,9 @@ socket.on('bricks', (bricks) => {
     brickElement.setAttributeNS(null, 'height', '20');
     stonesGroup.appendChild(brickElement);
   });
+});
+
+socket.on('mapUpdated', (map) => {
+  svg.setAttribute('width', map.width);
+  svg.setAttribute('height', map.height);
 });
