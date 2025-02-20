@@ -28,6 +28,34 @@ export default class WebSocketHandler {
 
     socket.on('join', (role) => {
       console.log(`Cliente ${socket.id} se ha unido como ${role}`);
+      if (role === 'player') {
+        this.#emitEvent('join', socket.id, socket);
+      }
+      console.log(this.#eventListeners);
+    });
+
+    socket.on('inicializeMap', (settings) => {
+      this.#emitEvent('inicializeMap', settings);
+    });
+
+    socket.on('move', (direction) => {
+      console.log(`Cliente ${socket.id} se ha movido hacia ${direction}`);
+    });
+
+    socket.on('recoger', (item) => {
+      console.log(`Cliente ${socket.id} ha recogido un(a) ${item}`);
+    });
+
+    socket.on('changeWidth', (width) => {
+      this.#emitEvent('changeWidth', socket, width);
+    });
+
+    socket.on('changeHeight', (height) => {
+      console.log(`Alto del mapa cambiado a ${height}`);
+    });
+
+    socket.on('changePisos', (pisos) => {
+      console.log(`Cantidad de pisos cambiada a ${pisos}`);
     });
   }
 

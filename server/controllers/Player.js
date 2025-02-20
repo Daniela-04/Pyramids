@@ -12,6 +12,12 @@ export default class Player {
     // Actualizar la posición del jugador
   }
 
+  setPosition (x, y) {
+    // Establece la posición del jugador
+    this.position.x = x;
+    this.position.y = y;
+  }
+
   pickUpStone () {
     // Recoge una piedra
     // Verificar si hay una piedra en la posición del jugador

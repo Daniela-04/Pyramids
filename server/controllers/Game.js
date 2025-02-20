@@ -1,16 +1,18 @@
 import WebSocketHandler from './WebSocketHandler.js';
 import Mapa from './Mapa.js';
 import Pyramid from './Pyramid.js';
+import Player from './Player.js';
 
 export class Game {
   constructor () {
     this.players = [];
-    this.map = new Mapa();
     this.pyramid = new Pyramid();
   }
 
   init () {
-    WebSocketHandler.on('iniciar', this.start);
+    WebSocketHandler.on('iniciar', this.start.bind(this));
+    WebSocketHandler.on('inicializeMap', this.configureMap.bind(this));
+    WebSocketHandler.on('join', this.addPlayer.bind(this));
   }
 
   start (data) {
@@ -23,10 +25,17 @@ export class Game {
     // Notifica a los jugadores que el juego ha terminado
   }
 
-  addPlayer (player) {
-    // Añade un jugador
-    // Verificar que no supere el número máximo de jugadores
-    // Asignar una posición inicial dentro del mapa
+  addPlayer (playerId) {
+    const player = new Player(playerId, 'Player');
+    const position = this.map.generateRandomPosition();
+    console.log(position);
+    this.players.push(player);
+    console.log(this.players);
+  }
+
+  configureMap (settings) {
+    this.map = new Mapa(settings.width, settings.height);
+    console.log(this.map);
   }
 
   removePlayer (playerId) {
