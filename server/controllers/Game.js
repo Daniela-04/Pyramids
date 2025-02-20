@@ -1,41 +1,68 @@
 import WebSocketHandler from './WebSocketHandler.js';
-import Mapa from './Mapa.js';
+import Map from './Mapa.js';
 import Pyramid from './Pyramid.js';
 import Player from './Player.js';
+import { Admin } from './Admin.js';
 
 export class Game {
   constructor () {
     this.players = [];
     this.pyramid = new Pyramid();
+    this.map = null;
+    this.isRunning = false;
+    this.interval = null;
   }
 
   init () {
-    WebSocketHandler.on('iniciar', this.start.bind(this));
-    WebSocketHandler.on('inicializeMap', this.configureMap.bind(this));
+    WebSocketHandler.on('startGame', () => Admin.startGame());
+    WebSocketHandler.on('configureGame', (settings) => Admin.configureGame(settings));
+    WebSocketHandler.on('stopGame', () => this.stop());
     WebSocketHandler.on('join', this.addPlayer.bind(this));
   }
 
-  start (data) {
-    console.log(`Juego iniciado: ${data}`);
+  start () {
+    console.log('Juego iniciado');
+    this.isRunning = true;
+    this.map.stones = []; // Reiniciar las rocas generadas
+    WebSocketHandler.broadcast('bricks', this.map.stones); // Limpiar las rocas en los clientes
+    let stonesGenerated = 0;
+    this.interval = setInterval(() => {
+      if (!this.isRunning) {
+        clearInterval(this.interval);
+        return;
+      }
+
+      if (stonesGenerated < 20) {
+        const position = this.map.generateRandomPosition();
+        if (this.map.isPositionAvailable(position.x, position.y)) {
+          this.map.stones.push(position);
+          stonesGenerated++;
+          WebSocketHandler.broadcast('bricks', this.map.stones);
+        }
+      } else {
+        clearInterval(this.interval);
+      }
+    }, 500);
   }
 
   stop () {
-    // Detiene el juego
-    // Cambia estado del juego a inactivo
-    // Notifica a los jugadores que el juego ha terminado
+    console.log('Juego detenido');
+    this.isRunning = false;
+    clearInterval(this.interval);
+    WebSocketHandler.broadcast('gameStop', { message: 'El administrador ha detenido el juego' });
   }
 
   addPlayer (playerId) {
     const player = new Player(playerId, 'Player');
     const position = this.map.generateRandomPosition();
-    console.log(position);
+    player.setPosition(position.x, position.y);
     this.players.push(player);
     console.log(this.players);
   }
 
   configureMap (settings) {
-    this.map = new Mapa(settings.width, settings.height);
-    console.log(this.map);
+    this.map = new Map(settings.width, settings.height);
+    console.log('Mapa configurado:', settings);
   }
 
   removePlayer (playerId) {

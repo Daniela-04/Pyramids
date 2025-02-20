@@ -1,28 +1,50 @@
 // eslint-disable-next-line no-undef
 const socket = io('http://localhost:8180');
+let gameRunning = false;
+const engegerButton = document.querySelector('#engegar');
 
 socket.emit('join', 'admin');
-
-/* document.querySelector('#engegar').addEventListener('click', () => {
-  socket.emit('iniciar', true);
-}); */
 
 const width = document.getElementById('width');
 const height = document.getElementById('height');
 const pisos = document.getElementById('pisos');
 
-document.addEventListener('DOMContentLoaded', () => {
-  socket.emit('inicializeMap', { width: width.value, height: height.value, pisos: pisos.value });
+// Configurar mapa
+document.querySelector('#configurar').addEventListener('click', (event) => {
+  const settings = {
+    width: parseInt(width.value),
+    height: parseInt(height.value),
+    pisos: parseInt(pisos.value)
+  };
+  socket.emit('inicializeMap', settings);
 });
 
-width.addEventListener('change', (event) => {
-  socket.emit('changeWidth', event.target.value);
+// Iniciar/Parar juego
+engegerButton.addEventListener('click', (event) => {
+  if (!gameRunning) {
+    socket.emit('iniciar');
+    engegerButton.textContent = 'Parar';
+    engegerButton.classList.add('stopping');
+    gameRunning = true;
+  } else {
+    socket.emit('stopGame');
+    engegerButton.textContent = 'Engegar';
+    engegerButton.classList.remove('stopping');
+    gameRunning = false;
+  }
 });
 
-height.addEventListener('change', (event) => {
-  socket.emit('changeHeight', event.target.value);
-});
-
-pisos.getElementById('pisos').addEventListener('change', (event) => {
-  socket.emit('changePisos', event.target.value);
+// Recibir y mostrar ladrillos
+socket.on('bricks', (bricks) => {
+  const stonesGroup = document.getElementById('stones');
+  stonesGroup.innerHTML = '';
+  bricks.forEach((brick) => {
+    const brickElement = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+    brickElement.setAttributeNS(null, 'href', '../assets/mapElements/ladrillo.png');
+    brickElement.setAttributeNS(null, 'x', brick.x);
+    brickElement.setAttributeNS(null, 'y', brick.y);
+    brickElement.setAttributeNS(null, 'width', '20');
+    brickElement.setAttributeNS(null, 'height', '20');
+    stonesGroup.appendChild(brickElement);
+  });
 });

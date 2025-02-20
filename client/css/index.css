@@ -4,8 +4,8 @@
   place-items: center;
   grid-template-columns: 0.3fr 1fr;
   background-image: url(../assets/img/fondo.jpg);
-  background-repeat: no-repeat; 
-  background-size: cover; 
+  background-repeat: no-repeat;
+  background-size: cover;
   position: relative;
 }
 
@@ -13,7 +13,7 @@
 .button {
   position: absolute;
   top: 20px;
-  left: 20px; 
+  left: 20px;
   border: none;
   background: transparent;
   padding: 0;
@@ -43,13 +43,11 @@
   width: 100%;
   height: 100%;
   border-radius: 8px;
-  background: linear-gradient(
-      to left,
+  background: linear-gradient(to left,
       hsl(217, 33%, 16%) 0%,
       hsl(217, 33%, 32%) 8%,
       hsl(217, 33%, 32%) 92%,
-      hsl(217, 33%, 16%) 100%
-  );
+      hsl(217, 33%, 16%) 100%);
 }
 
 /* Front layer */
@@ -94,27 +92,31 @@
 }
 
 .recuadre__joc {
-/*   position: relative; */
+  /*   position: relative; */
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
   max-width: 640px;
   padding: 20px;
-  background-color: rgb(255, 255, 255); /* Fondo blanco semi-transparente */
-  border: 2px solid #000000; /* Borde rojo */
-  border-radius: 12px; /* Bordes redondeados */
-  box-shadow: 6px 6px 20px rgba(0, 0, 0, 0.5); /* Sombra negra */
+  background-color: rgb(255, 255, 255);
+  /* Fondo blanco semi-transparente */
+  border: 2px solid #000000;
+  /* Borde rojo */
+  border-radius: 12px;
+  /* Bordes redondeados */
+  box-shadow: 6px 6px 20px rgba(0, 0, 0, 0.5);
+  /* Sombra negra */
 }
 
 
 
 .recuadre__config {
-  background-color: rgba(255, 255, 255, 0.8); 
+  background-color: rgba(255, 255, 255, 0.8);
   padding: 10px;
-  background-color: rgb(255, 255, 255); 
-  border: 2px solid #000000; 
-  border-radius: 12px; 
+  background-color: rgb(255, 255, 255);
+  border: 2px solid #000000;
+  border-radius: 12px;
   box-shadow: 6px 6px 20px rgba(0, 0, 0, 0.5);
   display: flex;
   flex-direction: column;
@@ -122,22 +124,54 @@
 
 
 .recuadre__config label {
-  font-size: 0.8rem; 
-  color: #333; 
-  text-align: center; 
-  padding: 10px ; 
-  font-family: 'Arial', sans-serif; 
-  font-weight: bold; 
+  font-size: 0.8rem;
+  color: #333;
+  text-align: center;
+  padding: 10px;
+  font-family: 'Arial', sans-serif;
+  font-weight: bold;
 }
 
-.recuadre__config input{
-  padding: 10px; 
-  font-size: 1.2rem; 
+.recuadre__config input {
+  padding: 10px;
+  font-size: 1.2rem;
   color: #333;
-  background-color: #fff; /* Color de fondo */
-  border: 2px solid #ccc; /* Borde del input */
-  border-radius: 5px; /* Bordes redondeados */
-  text-align: center; /* Alineación del texto */
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1); /* Sombra del input */
-  margin-bottom: 1rem; /* Espacio inferior */
+  background-color: #fff;
+  /* Color de fondo */
+  border: 2px solid #ccc;
+  /* Borde del input */
+  border-radius: 5px;
+  /* Bordes redondeados */
+  text-align: center;
+  /* Alineación del texto */
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+  /* Sombra del input */
+  margin-bottom: 1rem;
+  /* Espacio inferior */
+}
+
+#engegar {
+  background-color: #4CAF50;
+  /* Verde para "Engegar" */
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+#engegar:hover {
+  background-color: #45a049;
+}
+
+#engegar.stopping {
+  background-color: #f44336;
+  /* Rojo para "Parar" */
+}
+
+#engegar.stopping:hover {
+  background-color: #da190b;
 }

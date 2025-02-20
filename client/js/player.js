@@ -1,3 +1,4 @@
+/* global alert */
 // eslint-disable-next-line no-undef
 const socket = io('http://localhost:8180');
 
@@ -20,5 +21,31 @@ document.addEventListener('keydown', (event) => {
   if (event.key === 'Enter' || event.key === ' ') {
     socket.emit('recoger', 'item');
   }
-  console.log(event.key);
+});
+
+// Añadir el listener para las rocas
+socket.on('bricks', (bricks) => {
+  const stonesGroup = document.getElementById('stones');
+  stonesGroup.innerHTML = ''; // Clear existing bricks
+  bricks.forEach((brick) => {
+    const brickElement = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+    brickElement.setAttributeNS(null, 'href', '../assets/mapElements/ladrillo.png');
+    brickElement.setAttributeNS(null, 'x', brick.x);
+    brickElement.setAttributeNS(null, 'y', brick.y);
+    brickElement.setAttributeNS(null, 'width', '20');
+    brickElement.setAttributeNS(null, 'height', '20');
+    stonesGroup.appendChild(brickElement);
+  });
+});
+
+// Añadir listener para el mensaje de inicio del juego
+socket.on('gameStart', (data) => {
+  alert(data.message);
+  // También podrías crear un modal más elegante en lugar de usar alert
+});
+
+// Añadir listener para el mensaje de parada
+socket.on('gameStop', (data) => {
+  alert(data.message);
+  // También podrías crear un modal más elegante en lugar de usar alert
 });

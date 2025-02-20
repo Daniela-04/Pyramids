@@ -5,11 +5,11 @@
     <meta charset="UTF-8">
     <title>Pyramid (player)</title>
     <link rel="stylesheet" href="../css/reset.css">
-    <link rel="stylesheet" type="text/css" href="css/player.css">
+    <link rel="stylesheet" type="text/css" href="../css/player.css">
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <script defer src="http://localhost:8180/socket.io/socket.io.js"></script>
-    <script type="module" src="js/interface.js"></script>
-    <script type="module" src="js/player.js"></script>
+    <script type="module" src="../js/interface.js"></script>
+    <script type="module" src="../js/player.js"></script>
 </head>
 
 <body>
@@ -23,7 +23,7 @@
         </button>
         <h1>P Y R A M I D S</h1>
         <div class="recuadre__joc">
-            <svg width="640" viewBox="0 0 640 480" style="border:1px solid black">
+            <svg id="gameMap" width="640" height="480" viewBox="0 0 640 480" style="border:1px solid black">
                 <g id="pyramid"></g>
                 <g id="players"></g>
                 <g id="stones"></g>
@@ -32,6 +32,14 @@
         <div class="pisos__piramide_camp">
             <p>Pisos de la piràmide</p>
             <input type="number" id="pisos" step="1" value="8" min="4" max="8" disabled /><br>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="gameModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p id="modalMessage"></p>
         </div>
     </div>
 </body>

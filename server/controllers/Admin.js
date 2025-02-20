@@ -1,17 +1,25 @@
+import Game from './Game.js';
+import WebSocketHandler from './WebSocketHandler.js';
+
 export class Admin {
   static configureGame (settings) {
-    // Configura el juego
-    // Aplicar las configuraciones recibidas
-    // Notificar a los jugadores sobre los cambios
+    console.log('Configurando juego:', settings);
+    Game.configureMap(settings);
+    WebSocketHandler.broadcast('mapUpdated', settings);
   }
 
   static startGame () {
-    // Inicia el juego
-    // Llamar a Game.start()
+    console.log('Iniciando juego desde Admin');
+    if (!Game.map) {
+      console.error('El mapa no está configurado');
+      return;
+    }
+
+    Game.start();
   }
 
   static stopGame () {
-    // Detiene el juego
-    // Llamar a Game.stop()
+    console.log('Deteniendo juego');
+    Game.stop();
   }
 }
