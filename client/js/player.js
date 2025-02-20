@@ -1,8 +1,12 @@
-// eslint-disable-next-line no-undef
-const socket = io('http://localhost:8180');
+export class Player {
+  #socket = null;
+  init () {
+    this.initSocket();
+  }
 
-socket.emit('join', 'player');
-
-document.getElementById('cerrarSesionButton').addEventListener('click', function () {
-  window.location.href = '/choose';
-});
+  initSocket () {
+    // eslint-disable-next-line no-undef
+    this.#socket = io('http://localhost:8180');
+    this.#socket.emit('join', 'player');
+  }
+}

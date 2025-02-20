@@ -5,5 +5,4 @@ socket.emit('join', 'admin');
 
 document.querySelector('#engegar').addEventListener('click', () => {
   socket.emit('iniciar', true);
-  console.log('Engegat');
 });

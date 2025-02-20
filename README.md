@@ -10,7 +10,7 @@ Pasos para iniciar el proyecto:
 
 5- En la extensión de chrome:
 
-* Actual server address: http://localhost:3000 (server.js)
+* Actual server address: http://localhost:8080 (server.js)
 
 * Live server address: http://localhost:5500 (Five server)
 
