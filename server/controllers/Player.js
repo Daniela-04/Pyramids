@@ -1,15 +1,24 @@
+import configs from '../configs.js';
 export default class Player {
   constructor (id, name) {
     this.id = id;
-    this.name = name;
     this.position = { x: 0, y: 0 };
     this.hasStone = false;
   }
 
   move (direction) {
-    // Cambia la posición del jugador
-    // Verificar si la nueva posición es válida
-    // Actualizar la posición del jugador
+    if (direction === 'left') {
+      this.position.x -= configs.player.speed;
+    }
+    if (direction === 'right') {
+      this.position.x += configs.player.speed;
+    }
+    if (direction === 'up') {
+      this.position.y -= configs.player.speed;
+    }
+    if (direction === 'down') {
+      this.position.y += configs.player.speed;
+    }
   }
 
   setPosition (x, y) {
@@ -28,5 +37,9 @@ export default class Player {
     // Deja una piedra
     // Verificar si el jugador tiene una piedra
     // Colocar la piedra en la pirámide si está en la zona de construcción
+  }
+
+  toObject () {
+    return { id: this.id, position: this.position, hasStone: this.hasStone };
   }
 }

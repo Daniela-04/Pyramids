@@ -21,6 +21,9 @@ export default class WebSocketHandler {
   }
 
   static handleEvents (socket) {
+    socket.on('disconnect', () => {
+      this.#emitEvent('leave', socket.id);
+    });
     socket.on('iniciar', () => {
       this.#emitEvent('startGame');
       this.broadcast('gameStart', { message: 'El administrador ha iniciado el juego' });
@@ -40,6 +43,7 @@ export default class WebSocketHandler {
     });
 
     socket.on('move', (direction) => {
+      this.#emitEvent('move', socket, direction);
       console.log(`Cliente ${socket.id} se ha movido hacia ${direction}`);
     });
 

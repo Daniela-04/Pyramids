@@ -25,8 +25,8 @@ export default class Map {
   }
 
   generateRandomPosition () {
-    const x = Math.floor(Math.random() * (this.width - 20)); // Restamos 20 para el tamaño del ladrillo
-    const y = Math.floor(Math.random() * (this.height - 20)); // Restamos 20 para el tamaño del ladrillo
+    const x = Math.floor(Math.random() * (this.width - 20));
+    const y = Math.floor(Math.random() * (this.height - 20));
     return { x, y };
   }
 

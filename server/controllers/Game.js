@@ -18,6 +18,8 @@ export class Game {
     WebSocketHandler.on('configureGame', (settings) => Admin.configureGame(settings));
     WebSocketHandler.on('stopGame', () => this.stop());
     WebSocketHandler.on('join', this.addPlayer.bind(this));
+    WebSocketHandler.on('leave', this.removePlayer.bind(this));
+    WebSocketHandler.on('move', this.movePlayer.bind(this));
   }
 
   start () {
@@ -58,6 +60,17 @@ export class Game {
     const position = this.map.generateRandomPosition();
     player.setPosition(position.x, position.y);
     this.players.push(player);
+    console.log(this.players);
+    WebSocketHandler.broadcast('drawPlayers', this.playersToArray());
+  }
+
+  movePlayer (socket, direction) {
+    const playerId = socket.id;
+    const player = this.players.find((player) => player.id === playerId);
+    if (player) {
+      player.move(direction);
+      WebSocketHandler.broadcast('drawPlayers', this.playersToArray());
+    }
   }
 
   configureMap (settings) {
@@ -65,15 +78,18 @@ export class Game {
   }
 
   removePlayer (playerId) {
-    // Elimina un jugador
-    // Buscar al jugador por su ID y eliminarlo de la lista
-    // Notificar a otros jugadores sobre la salida
+    this.players = this.players.filter((player) => player.id !== playerId);
+    WebSocketHandler.broadcast('drawPlayers', this.playersToArray());
   }
 
   updateGameState () {
     // Actualiza el estado del juego
     // Mueve jugadores automáticamente
     // Genera nuevos elementos en el mapa si es necesario
+  }
+
+  playersToArray () {
+    return this.players.map((player) => player.toObject());
   }
 }
 

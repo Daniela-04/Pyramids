@@ -6,6 +6,8 @@ const pisos = document.getElementById('pisos');
 
 socket.emit('join', 'player');
 
+// const moving = { up: false, down: false, left: false, right: false };
+
 document.addEventListener('keydown', (event) => {
   if (event.key === 'ArrowUp' || event.key === 'w') {
     socket.emit('move', 'up');
@@ -40,6 +42,20 @@ socket.on('bricks', (bricks) => {
   });
 });
 
+socket.on('drawPlayers', (players) => {
+  const playersGroup = document.getElementById('players');
+  playersGroup.innerHTML = '';
+  players.forEach((player) => {
+    const playerElement = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+    playerElement.setAttributeNS(null, 'href', '../assets/img/fotoPlayer.png');
+    playerElement.setAttributeNS(null, 'id', player.id);
+    playerElement.setAttributeNS(null, 'x', player.position.x);
+    playerElement.setAttributeNS(null, 'y', player.position.y);
+    playerElement.setAttributeNS(null, 'width', '40');
+    playerElement.setAttributeNS(null, 'height', '40');
+    document.getElementById('players').appendChild(playerElement);
+  });
+});
 // Añadir listener para el mensaje de inicio del juego
 socket.on('gameStart', (data) => {
   alert(data.message);
