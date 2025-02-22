@@ -1,6 +1,6 @@
-import configs from '../configs.js';
+import configs from '../../configs.js';
 export default class Player {
-  constructor (id, name) {
+  constructor (id) {
     this.id = id;
     this.position = { x: 0, y: 0 };
     this.hasStone = false;

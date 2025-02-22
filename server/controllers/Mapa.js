@@ -1,4 +1,4 @@
-import configs from '../configs.js';
+import configs from '../../configs.js';
 export default class Map {
   constructor (width = configs.map.width, height = configs.map.height) {
     this.width = width;

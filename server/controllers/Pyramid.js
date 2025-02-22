@@ -1,4 +1,4 @@
-import configs from '../configs.js';
+import configs from '../../configs.js';
 export default class Pyramid {
   #levels;
   constructor () {

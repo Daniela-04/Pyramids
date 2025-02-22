@@ -1,4 +1,5 @@
 import WebSocketHandler from './WebSocketHandler.js';
+import configs from '../../configs.js';
 import Map from './Mapa.js';
 import Pyramid from './Pyramid.js';
 import Player from './Player.js';
@@ -55,20 +56,20 @@ export class Game {
     WebSocketHandler.broadcast('gameStop', { message: 'El administrador ha detenido el juego' });
   }
 
-  addPlayer (playerId) {
+  addPlayer (playerId, socket) {
     const player = new Player(playerId, 'Player');
     const position = this.map.generateRandomPosition();
     player.setPosition(position.x, position.y);
     this.players.push(player);
-    console.log(this.players);
+    socket.emit('coordinates', { x: position.x, y: position.y, speed: configs.player.speed });
     WebSocketHandler.broadcast('drawPlayers', this.playersToArray());
   }
 
-  movePlayer (socket, direction) {
+  movePlayer (coords, socket) {
     const playerId = socket.id;
     const player = this.players.find((player) => player.id === playerId);
     if (player) {
-      player.move(direction);
+      player.setPosition(coords.x, coords.y);
       WebSocketHandler.broadcast('drawPlayers', this.playersToArray());
     }
   }
@@ -78,14 +79,12 @@ export class Game {
   }
 
   removePlayer (playerId) {
-    this.players = this.players.filter((player) => player.id !== playerId);
+    this.players = this.players.filter(player => player.id !== playerId);
     WebSocketHandler.broadcast('drawPlayers', this.playersToArray());
   }
 
   updateGameState () {
-    // Actualiza el estado del juego
-    // Mueve jugadores automáticamente
-    // Genera nuevos elementos en el mapa si es necesario
+
   }
 
   playersToArray () {

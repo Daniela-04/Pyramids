@@ -1,5 +1,5 @@
 import express from 'express';
-import configs from './configs.js';
+import configs from '../configs.js';
 import router from './router.js';
 import path, { dirname } from 'path';
 import WebSocketHandler from './controllers/WebSocketHandler.js';
