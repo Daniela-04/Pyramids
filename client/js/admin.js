@@ -33,13 +33,13 @@ engegerButton.addEventListener('click', (event) => {
     engegerButton.textContent = 'Engegar';
     engegerButton.classList.remove('stopping');
     gameRunning = false;
+    socket.emit('gameStopped');
   }
 });
 
 // Recibir y mostrar ladrillos
 socket.on('bricks', (bricks) => {
   const stonesGroup = document.getElementById('stones');
-
   const existingBricks = new Map();
   stonesGroup.childNodes.forEach((child) => {
     if (child.id) existingBricks.set(child.id, child);
@@ -58,6 +58,15 @@ socket.on('bricks', (bricks) => {
       stonesGroup.appendChild(brickElement);
     }
   });
+});
+
+// Limpiar rocas al detener el juego
+socket.on('gameStop', () => {
+  const stonesGroup = document.getElementById('stones');
+  stonesGroup.innerHTML = ''; // Eliminar todas las rocas
+  const playersGroup = document.getElementById('players');
+  playersGroup.innerHTML = '';// Eliminar todos los jugadores
+  window.alert('El juego ha sido detenido');
 });
 
 socket.on('mapUpdated', (map) => {

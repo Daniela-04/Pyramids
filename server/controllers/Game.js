@@ -92,6 +92,11 @@ export class Game {
   playersToArray () {
     return this.players.map((player) => player.toObject());
   }
+
+  // Método para obtener el estado del juego
+  getState () {
+    return this.isRunning;
+  }
 }
 
 export default new Game();

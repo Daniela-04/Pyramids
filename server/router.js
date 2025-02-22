@@ -33,6 +33,9 @@ export class RouterConfig {
     this.router.get('/admin', (req, res) => {
       res.sendFile(path.join(__dirname, '../client/html/admin.html'));
     });
+    this.router.get('/lobby', (req, res) => {
+      res.sendFile(path.join(__dirname, '../client/html/lobby.html'));
+    });
   }
 
   static configurePostRoutes () {

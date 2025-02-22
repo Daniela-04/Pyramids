@@ -1,6 +1,8 @@
 import { Server } from 'socket.io';
 import configs from '../../configs.js';
 import { createServer } from 'http';
+// importo el modulo Game para el estado del juego
+import Game from './Game.js';
 
 export default class WebSocketHandler {
   static #httpServer;
@@ -45,7 +47,12 @@ export default class WebSocketHandler {
     socket.on('join', (role) => {
       console.log(`Cliente ${socket.id} se ha unido como ${role}`);
       if (role === 'player') {
-        this.#emitEvent('join', socket.id, socket);
+        // Enviamos el estado del juego a los nuevos jugadores
+        if (Game.getState()) {
+          socket.emit('gameRunning', { message: 'El juego ya está en curso' });
+        } else {
+          this.#emitEvent('join', socket.id, socket);
+        }
       }
       // console.log(this.#eventListeners);
     });
@@ -62,6 +69,10 @@ export default class WebSocketHandler {
     socket.on('stopGame', () => {
       this.#emitEvent('stopGame');
       this.broadcast('gameStop', { message: 'El administrador ha detenido el juego' });
+    });
+
+    socket.on('gameStopped', () => {
+      this.broadcast('gameStopped');
     });
   }
 

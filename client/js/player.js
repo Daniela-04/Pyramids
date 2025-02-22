@@ -20,7 +20,6 @@ document.addEventListener('keydown', (event) => {
 
     const playerX = dataPlayer.x;
     const playerY = dataPlayer.y;
-
     console.log(playerX, playerY, dataPlayer.id);
     console.log(document.getElementById(dataPlayer.id));
     socket.emit('recoger', 'item');
@@ -41,6 +40,16 @@ socket.on('coordinates', (data) => {
   dataPlayer.y = data.y;
   dataPlayer.speed = data.speed;
   console.log(dataPlayer);
+});
+// Añadir listener para el mensaje de juego en curso
+// Mostramos mensaje en pantalla
+socket.on('gameRunning', (data) => {
+  window.location.href = '/lobby';
+});
+
+// Recargamos pagina sin gameStopped = false
+socket.on('gameStopped', () => {
+  window.location.href = '/player';
 });
 
 function movePlayer () {
