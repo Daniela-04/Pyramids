@@ -12,7 +12,7 @@ export default class Map {
       if (this.isPositionAvailable(position.x, position.y)) {
         this.stones.push(position);
       }
-      console.log(this.stones);
+      //console.log(this.stones);
     }
   }
 

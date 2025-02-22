@@ -52,7 +52,7 @@ export default class WebSocketHandler {
 
     socket.on('move', (coords) => {
       this.#emitEvent('move', coords, socket);
-      console.log(`Cliente ${socket.id} se ha movido hacia ${coords.x}, ${coords.y}`);
+      // console.log(`Cliente ${socket.id} se ha movido hacia ${coords.x}, ${coords.y}`);
     });
 
     socket.on('recoger', (item) => {

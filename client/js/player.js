@@ -8,18 +8,10 @@ socket.emit('join', 'player');
 const moving = { up: false, down: false, left: false, right: false };
 
 document.addEventListener('keydown', (event) => {
-  if (event.key === 'w' || event.key === 'ArrowUp') {
-    moving.up = true;
-  } else if (event.key === 's' || event.key === 'ArrowDown') {
-    moving.down = true;
-  } else if (event.key === 'a' || event.key === 'ArrowLeft') {
-    moving.left = true;
-  } else if (event.key === 'd' || event.key === 'ArrowRight') {
-    moving.right = true;
-  }
-
-  if (moving.up && moving.down) return;
-  if (moving.left && moving.right) return;
+  if (['w', 'ArrowUp'].includes(event.key)) moving.up = true;
+  if (['s', 'ArrowDown'].includes(event.key)) moving.down = true;
+  if (['a', 'ArrowLeft'].includes(event.key)) moving.left = true;
+  if (['d', 'ArrowRight'].includes(event.key)) moving.right = true;
   movePlayer();
 
   if (event.key === 'Enter' || event.key === ' ') {
@@ -28,15 +20,10 @@ document.addEventListener('keydown', (event) => {
 });
 
 document.addEventListener('keyup', (event) => {
-  if (event.key === 'w' || event.key === 'ArrowUp') {
-    moving.up = false;
-  } else if (event.key === 's' || event.key === 'ArrowDown') {
-    moving.down = false;
-  } else if (event.key === 'a' || event.key === 'ArrowLeft') {
-    moving.left = false;
-  } else if (event.key === 'd' || event.key === 'ArrowRight') {
-    moving.right = false;
-  }
+  if (['w', 'ArrowUp'].includes(event.key)) moving.up = false;
+  if (['s', 'ArrowDown'].includes(event.key)) moving.down = false;
+  if (['a', 'ArrowLeft'].includes(event.key)) moving.left = false;
+  if (['d', 'ArrowRight'].includes(event.key)) moving.right = false;
 });
 const dataPlayer = {};
 socket.on('coordinates', (data) => {
@@ -51,79 +38,62 @@ function movePlayer () {
   let newY = dataPlayer.y;
 
   if (moving.up) newY = Math.max(0, dataPlayer.y - dataPlayer.speed);
-  if (moving.down) newY = Math.min(465, dataPlayer.y + dataPlayer.speed);
+  if (moving.down) newY = Math.min(440, dataPlayer.y + dataPlayer.speed);
   if (moving.left) newX = Math.max(0, dataPlayer.x - dataPlayer.speed);
-  if (moving.right) newX = Math.min(625, dataPlayer.x + dataPlayer.speed);
+  if (moving.right) newX = Math.min(600, dataPlayer.x + dataPlayer.speed);
 
-  dataPlayer.x = newX;
-  dataPlayer.y = newY;
-  socket.emit('move', dataPlayer);
+  // Si las coordenadas han cambiado, enviarlas al servidor
+  if (newX !== dataPlayer.x || newY !== dataPlayer.y) {
+    dataPlayer.x = newX;
+    dataPlayer.y = newY;
+    socket.emit('move', dataPlayer);
+  }
 }
 
 // Añadir el listener para las rocas
 socket.on('bricks', (bricks) => {
   const stonesGroup = document.getElementById('stones');
-
-  const existingBricks = new Map();
-  stonesGroup.childNodes.forEach((child) => {
-    if (child.id) existingBricks.set(child.id, child);
-  });
-
+  stonesGroup.innerHTML = ''; // Clear existing bricks
   bricks.forEach((brick) => {
-    const brickElement = existingBricks.get(brick.id);
-
-    if (!brickElement) {
-      const brickElement = document.createElementNS('http://www.w3.org/2000/svg', 'image');
-      brickElement.setAttributeNS(null, 'href', '../assets/mapElements/ladrillo.png');
-      brickElement.setAttributeNS(null, 'x', brick.x);
-      brickElement.setAttributeNS(null, 'y', brick.y);
-      brickElement.setAttributeNS(null, 'width', '20');
-      brickElement.setAttributeNS(null, 'height', '20');
-      stonesGroup.appendChild(brickElement);
-    }
+    const brickElement = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+    brickElement.setAttributeNS(null, 'href', '../assets/mapElements/ladrillo.png');
+    brickElement.setAttributeNS(null, 'x', brick.x);
+    brickElement.setAttributeNS(null, 'y', brick.y);
+    brickElement.setAttributeNS(null, 'width', '20');
+    brickElement.setAttributeNS(null, 'height', '20');
+    stonesGroup.appendChild(brickElement);
   });
 });
 
-const currentPlayers = [];
+const currentPlayers = {};
 socket.on('drawPlayers', (players) => {
-  currentPlayers.push(...players);
-  drawPlayers(players);
-  console.log(players);
+  players.forEach(player => {
+    currentPlayers[player.id] = player;
+  });
+  drawPlayers();
 });
 
-function drawPlayers (players) {
+function drawPlayers () {
   const playersGroup = document.getElementById('players');
 
-  const existingPlayers = new Map();
-  playersGroup.childNodes.forEach((child) => {
-    if (child.id) existingPlayers.set(child.id, child);
-  });
+  playersGroup.innerHTML = '';
+  for (const id in currentPlayers) {
+    const player = currentPlayers[id];
 
-  players.forEach((player) => {
-    let playerElement = existingPlayers.get(player.id);
-
-    if (!playerElement) {
-      playerElement = document.createElementNS('http://www.w3.org/2000/svg', 'image');
-      playerElement.setAttributeNS('http://www.w3.org/1999/xlink', 'href', '../assets/img/fotoPlayer.png');
-      playerElement.setAttributeNS(null, 'id', player.id);
-      playerElement.setAttributeNS(null, 'width', '40');
-      playerElement.setAttributeNS(null, 'height', '40');
-      playersGroup.appendChild(playerElement);
-    }
-
-    playerElement.setAttributeNS(null, 'x', player.position.x);
-    playerElement.setAttributeNS(null, 'y', player.position.y);
-
-    existingPlayers.delete(player.id);
-  });
-
-  existingPlayers.forEach((playerElement) => {
-    playersGroup.removeChild(playerElement);
-  });
+    const playerElement = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+    playerElement.setAttributeNS('http://www.w3.org/1999/xlink', 'href', '../assets/img/fotoPlayer.png');
+    playerElement.setAttribute('x', player.position.x);
+    playerElement.setAttribute('y', player.position.y);
+    playerElement.setAttribute('width', '40');
+    playerElement.setAttribute('height', '40');
+    playersGroup.appendChild(playerElement);
+  }
 }
+
 // Añadir listener para el mensaje de inicio del juego
 socket.on('gameStart', (data) => {
   window.alert(data.message);
+  update();
 });
 
 // Añadir listener para el mensaje de parada
@@ -137,3 +107,17 @@ socket.on('mapUpdated', (map) => {
   svg.setAttribute('viewBox', `0 0 ${map.width} ${map.height}`);
   pisos.value = map.pisos;
 });
+
+let isUpdating = false;
+
+function update () {
+  if (!isUpdating) {
+    isUpdating = true;
+    window.requestAnimationFrame(() => {
+      movePlayer();
+      drawPlayers();
+      isUpdating = false;
+      update();
+    });
+  }
+}

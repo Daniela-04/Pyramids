@@ -55,17 +55,27 @@ socket.on('mapUpdated', (map) => {
   svg.setAttribute('height', map.height);
 });
 
+const currentPlayers = {};
 socket.on('drawPlayers', (players) => {
-  const playersGroup = document.getElementById('players');
-  playersGroup.innerHTML = '';
-  players.forEach((player) => {
-    const playerElement = document.createElementNS('http://www.w3.org/2000/svg', 'image');
-    playerElement.setAttributeNS(null, 'href', '../assets/img/fotoPlayer.png');
-    playerElement.setAttributeNS(null, 'id', player.id);
-    playerElement.setAttributeNS(null, 'x', player.position.x);
-    playerElement.setAttributeNS(null, 'y', player.position.y);
-    playerElement.setAttributeNS(null, 'width', '40');
-    playerElement.setAttributeNS(null, 'height', '40');
-    document.getElementById('players').appendChild(playerElement);
+  players.forEach(player => {
+    currentPlayers[player.id] = player;
   });
+  drawPlayers();
 });
+
+function drawPlayers () {
+  const playersGroup = document.getElementById('players');
+
+  playersGroup.innerHTML = '';
+  for (const id in currentPlayers) {
+    const player = currentPlayers[id];
+
+    const playerElement = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+    playerElement.setAttributeNS('http://www.w3.org/1999/xlink', 'href', '../assets/img/fotoPlayer.png');
+    playerElement.setAttribute('x', player.position.x);
+    playerElement.setAttribute('y', player.position.y);
+    playerElement.setAttribute('width', '40');
+    playerElement.setAttribute('height', '40');
+    playersGroup.appendChild(playerElement);
+  }
+}

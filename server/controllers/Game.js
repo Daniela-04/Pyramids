@@ -41,7 +41,7 @@ export class Game {
           this.map.stones.push(position);
           stonesGenerated++;
           WebSocketHandler.broadcast('bricks', this.map.stones);
-          console.log(this.map.stones);
+          // console.log(this.map.stones);
         }
       } else {
         clearInterval(this.interval);
@@ -62,7 +62,7 @@ export class Game {
     player.setPosition(position.x, position.y);
     this.players.push(player);
     socket.emit('coordinates', { x: position.x, y: position.y, speed: configs.player.speed });
-    WebSocketHandler.broadcast('drawPlayers', this.playersToArray());
+    // WebSocketHandler.broadcast('drawPlayers', this.playersToArray());
   }
 
   movePlayer (coords, socket) {
