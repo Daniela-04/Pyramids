@@ -4,6 +4,7 @@ export default class Player {
     this.id = id;
     this.position = { x: 0, y: 0 };
     this.hasStone = false;
+    this.team = null;
   }
 
   move (direction) {
@@ -27,6 +28,10 @@ export default class Player {
     this.position.y = y;
   }
 
+  setTeam (team) {
+    this.team = team;
+  }
+
   pickUpStone () {
     // Recoge una piedra
     // Verificar si hay una piedra en la posición del jugador
@@ -40,6 +45,6 @@ export default class Player {
   }
 
   toObject () {
-    return { id: this.id, position: this.position, hasStone: this.hasStone };
+    return { id: this.id, position: this.position, hasStone: this.hasStone, team: this.team };
   }
 }

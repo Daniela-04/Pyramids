@@ -8,6 +8,7 @@ import { Admin } from './Admin.js';
 export class Game {
   constructor () {
     this.players = [];
+    this.blueTeam = false;
     this.pyramid = new Pyramid();
     this.map = new Map();
     this.isRunning = false;
@@ -57,12 +58,13 @@ export class Game {
   }
 
   addPlayer (playerId, socket) {
+    this.blueTeam = !this.blueTeam;
     const player = new Player(playerId, 'Player');
     const position = this.map.generateRandomPosition();
     player.setPosition(position.x, position.y);
+    player.setTeam(this.blueTeam ? 'blue' : 'purple');
     this.players.push(player);
-    socket.emit('coordinates', { x: position.x, y: position.y, speed: configs.player.speed });
-    // WebSocketHandler.broadcast('drawPlayers', this.playersToArray());
+    socket.emit('coordinates', { id: playerId, x: position.x, y: position.y, speed: configs.player.speed });
   }
 
   movePlayer (coords, socket) {
