@@ -16,13 +16,23 @@ document.addEventListener('keydown', (event) => {
   movePlayer();
 
   if (['Enter', ' '].includes(event.key)) {
-    // verificar colicion con un ladrillo
-
-    const playerX = dataPlayer.x;
-    const playerY = dataPlayer.y;
-    console.log(playerX, playerY, dataPlayer.id);
-    console.log(document.getElementById(dataPlayer.id));
-    socket.emit('recoger', 'item');
+    if (dataPlayer.hasStone) {
+      socket.emit('soltar', {
+        playerId: dataPlayer.id,
+        x: dataPlayer.x,
+        y: dataPlayer.y
+      });
+      dataPlayer.hasStone = false; // Actualizar el estado local
+    } else {
+      const collidedBrick = checkCollisionWithBricks();
+      if (collidedBrick && !dataPlayer.hasStone) {
+        socket.emit('recoger', {
+          playerId: dataPlayer.id,
+          brickId: collidedBrick.id
+        });
+        dataPlayer.hasStone = true; // Actualizar el estado local
+      }
+    }
   }
 });
 
@@ -39,6 +49,7 @@ socket.on('coordinates', (data) => {
   dataPlayer.x = data.x;
   dataPlayer.y = data.y;
   dataPlayer.speed = data.speed;
+  dataPlayer.hasStone = data.hasStone;
   console.log(dataPlayer);
 });
 // Añadir listener para el mensaje de juego en curso
@@ -69,11 +80,34 @@ function movePlayer () {
   }
 }
 
-// function checkCollision (element1, element2) {
-//   const rect1 = element1.getBoundingClientRect();
-//   const rect2 = element2.getBoundingClientRect();
-//   return rect1.top < rect2.bottom && rect1.bottom > rect2.top && rect1.left < rect2.right && rect1.right > rect2.left;
-// }
+function checkCollisionWithBricks () {
+  const stonesGroup = document.getElementById('stones');
+  const playerRect = {
+    x: dataPlayer.x,
+    y: dataPlayer.y,
+    width: 40,
+    height: 40
+  };
+
+  for (const brickElement of stonesGroup.children) {
+    const brickRect = {
+      x: parseInt(brickElement.getAttribute('x')),
+      y: parseInt(brickElement.getAttribute('y')),
+      width: parseInt(brickElement.getAttribute('width')),
+      height: parseInt(brickElement.getAttribute('height')),
+      id: brickElement.getAttribute('id')
+    };
+
+    if (playerRect.x < brickRect.x + brickRect.width &&
+        playerRect.x + playerRect.width > brickRect.x &&
+        playerRect.y < brickRect.y + brickRect.height &&
+        playerRect.y + playerRect.height > brickRect.y) {
+      return brickRect;
+    }
+  }
+  return null;
+}
+
 // Añadir el listener para las rocas
 socket.on('bricks', (bricks) => {
   const stonesGroup = document.getElementById('stones');
@@ -85,6 +119,7 @@ socket.on('bricks', (bricks) => {
     brickElement.setAttributeNS(null, 'y', brick.y);
     brickElement.setAttributeNS(null, 'width', '20');
     brickElement.setAttributeNS(null, 'height', '20');
+    brickElement.setAttributeNS(null, 'id', brick.id);
     stonesGroup.appendChild(brickElement);
   });
 });

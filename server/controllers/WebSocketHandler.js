@@ -62,8 +62,14 @@ export default class WebSocketHandler {
       // console.log(`Cliente ${socket.id} se ha movido hacia ${coords.x}, ${coords.y}`);
     });
 
-    socket.on('recoger', (item) => {
-      console.log(`Cliente ${socket.id} ha recogido un(a) ${item}`);
+    socket.on('recoger', (data) => {
+      console.log(`Cliente ${data.playerId} ha recogido la piedra ${data.brickId}`);
+      this.#emitEvent('recoger', data);
+    });
+
+    socket.on('soltar', (data) => {
+      console.log(`Cliente ${data.playerId} ha soltado la piedra en (${data.x}, ${data.y})`);
+      this.#emitEvent('soltar', data);
     });
 
     socket.on('stopGame', () => {

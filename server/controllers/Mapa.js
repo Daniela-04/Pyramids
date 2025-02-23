@@ -1,4 +1,5 @@
 import configs from '../../configs.js';
+
 export default class Map {
   constructor (width = configs.map.width, height = configs.map.height) {
     this.width = width;
@@ -49,5 +50,17 @@ export default class Map {
 
   getHeight () {
     return this.height;
+  }
+
+  addStone (x, y) {
+    const newStone = {
+      id: `brick${Date.now()}`,
+      x,
+      y,
+      width: 20,
+      height: 20
+    };
+    this.stones.push(newStone);
+    return newStone;
   }
 }

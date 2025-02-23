@@ -11,6 +11,11 @@ const pisos = document.getElementById('pisos');
 const svg = document.getElementById('gameMap');
 const area2 = document.getElementById('area2');
 
+// Definir el objeto map
+const map = {
+  stones: []
+};
+
 // Configurar mapa
 document.querySelector('#configurar').addEventListener('click', (event) => {
   const settings = {
@@ -39,24 +44,18 @@ engegerButton.addEventListener('click', (event) => {
 
 // Recibir y mostrar ladrillos
 socket.on('bricks', (bricks) => {
+  map.stones = bricks; // Actualizar map.stones con los ladrillos recibidos
   const stonesGroup = document.getElementById('stones');
-  const existingBricks = new Map();
-  stonesGroup.childNodes.forEach((child) => {
-    if (child.id) existingBricks.set(child.id, child);
-  });
-
+  stonesGroup.innerHTML = ''; // Limpiar el grupo de piedras
   bricks.forEach((brick) => {
-    const brickElement = existingBricks.get(brick.id);
-
-    if (!brickElement) {
-      const brickElement = document.createElementNS('http://www.w3.org/2000/svg', 'image');
-      brickElement.setAttributeNS(null, 'href', '../assets/mapElements/ladrillo.png');
-      brickElement.setAttributeNS(null, 'x', brick.x);
-      brickElement.setAttributeNS(null, 'y', brick.y);
-      brickElement.setAttributeNS(null, 'width', '20');
-      brickElement.setAttributeNS(null, 'height', '20');
-      stonesGroup.appendChild(brickElement);
-    }
+    const brickElement = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+    brickElement.setAttributeNS(null, 'href', '../assets/mapElements/ladrillo.png');
+    brickElement.setAttributeNS(null, 'x', brick.x);
+    brickElement.setAttributeNS(null, 'y', brick.y);
+    brickElement.setAttributeNS(null, 'width', '20');
+    brickElement.setAttributeNS(null, 'height', '20');
+    brickElement.setAttributeNS(null, 'id', brick.id);
+    stonesGroup.appendChild(brickElement);
   });
 });
 
@@ -75,6 +74,18 @@ socket.on('mapUpdated', (map) => {
   svg.setAttribute('viewBox', `0 0 ${map.width} ${map.height}`);
   area2.setAttribute('x', map.width - 90);
   area2.setAttribute('y', map.height - 90);
+});
+
+// Añadir listener para soltar rocas
+socket.on('soltar', (data) => {
+  const { playerId, x, y } = data;
+  const player = currentPlayers.find(player => player.id === playerId);
+  if (player && player.hasStone) {
+    player.hasStone = false;
+    const brick = { id: `brick${Date.now()}`, x, y };
+    map.stones.push(brick); // Añadir la nueva roca al mapa
+    socket.emit('bricks', map.stones); // Emitir el evento con las rocas actualizadas
+  }
 });
 
 const currentPlayers = [];

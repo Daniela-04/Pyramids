@@ -34,14 +34,12 @@ export default class Player {
 
   pickUpStone () {
     // Recoge una piedra
-    // Verificar si hay una piedra en la posición del jugador
-    // Asignar la piedra al jugador si está disponible
+    this.hasStone = true;
   }
 
   dropStone () {
     // Deja una piedra
-    // Verificar si el jugador tiene una piedra
-    // Colocar la piedra en la pirámide si está en la zona de construcción
+    this.hasStone = false;
   }
 
   toObject () {

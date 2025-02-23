@@ -22,6 +22,8 @@ export class Game {
     WebSocketHandler.on('join', this.addPlayer.bind(this));
     WebSocketHandler.on('leave', this.removePlayer.bind(this));
     WebSocketHandler.on('move', this.movePlayer.bind(this));
+    WebSocketHandler.on('recoger', this.pickUpBrick.bind(this));
+    WebSocketHandler.on('soltar', this.dropBrick.bind(this));
   }
 
   start () {
@@ -39,7 +41,7 @@ export class Game {
       if (stonesGenerated < 20) {
         const position = this.map.generateRandomPosition();
         if (this.map.isPositionAvailable(position.x, position.y)) {
-          this.map.stones.push(position);
+          this.map.stones.push({ ...position, id: `brick${stonesGenerated}` });
           stonesGenerated++;
           WebSocketHandler.broadcast('bricks', this.map.stones);
           // console.log(this.map.stones);
@@ -64,7 +66,7 @@ export class Game {
     player.setPosition(position.x, position.y);
     player.setTeam(this.blueTeam ? 'blue' : 'purple');
     this.players.push(player);
-    socket.emit('coordinates', { id: playerId, x: position.x, y: position.y, speed: configs.player.speed });
+    socket.emit('coordinates', { id: playerId, x: position.x, y: position.y, speed: configs.player.speed, hasStone: player.hasStone });
   }
 
   movePlayer (coords, socket) {
@@ -72,6 +74,31 @@ export class Game {
     const player = this.players.find((player) => player.id === playerId);
     if (player) {
       player.setPosition(coords.x, coords.y);
+      WebSocketHandler.broadcast('drawPlayers', this.playersToArray());
+    }
+  }
+
+  pickUpBrick ({ playerId, brickId }) {
+    const player = this.players.find(player => player.id === playerId);
+    if (player && !player.hasStone) {
+      this.map.stones = this.map.stones.filter(brick => brick.id !== brickId);
+      player.pickUpStone();
+      WebSocketHandler.broadcast('bricks', this.map.stones);
+      WebSocketHandler.broadcast('drawPlayers', this.playersToArray());
+    }
+  }
+
+  dropBrick ({ playerId, x, y }) {
+    const player = this.players.find(player => player.id === playerId);
+    if (player && player.hasStone) {
+      const newStone = {
+        id: `brick${Date.now()}`,
+        x,
+        y
+      };
+      this.map.stones.push(newStone);
+      player.dropStone();
+      WebSocketHandler.broadcast('bricks', this.map.stones);
       WebSocketHandler.broadcast('drawPlayers', this.playersToArray());
     }
   }
