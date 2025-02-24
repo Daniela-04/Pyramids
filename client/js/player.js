@@ -70,9 +70,9 @@ function movePlayer () {
   let newY = dataPlayer.y;
 
   if (moving.up) newY = Math.max(0, dataPlayer.y - dataPlayer.speed);
-  if (moving.down) newY = Math.min(440, dataPlayer.y + dataPlayer.speed);
+  if (moving.down) newY = Math.min(svg.getAttribute('height') - 40, dataPlayer.y + dataPlayer.speed);
   if (moving.left) newX = Math.max(0, dataPlayer.x - dataPlayer.speed);
-  if (moving.right) newX = Math.min(600, dataPlayer.x + dataPlayer.speed);
+  if (moving.right) newX = Math.min(svg.getAttribute('width') - 40, dataPlayer.x + dataPlayer.speed);
 
   // Si las coordenadas han cambiado, enviarlas al servidor
   if (newX !== dataPlayer.x || newY !== dataPlayer.y) {
@@ -173,6 +173,8 @@ socket.on('mapUpdated', (map) => {
   svg.setAttribute('viewBox', `0 0 ${map.width} ${map.height}`);
   area2.setAttribute('x', map.width - 90);
   area2.setAttribute('y', map.height - 90);
+  piramide2.setAttribute('x', map.width - 90);
+  piramide2.setAttribute('y', map.height - 90);
   pisos.value = map.pisos;
 });
 

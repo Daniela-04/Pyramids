@@ -25,6 +25,7 @@ document.querySelector('#configurar').addEventListener('click', (event) => {
     height: parseInt(height.value),
     pisos: parseInt(pisos.value)
   };
+
   socket.emit('inicializeMap', settings);
 });
 
@@ -81,6 +82,8 @@ socket.on('mapUpdated', (map) => {
   svg.setAttribute('viewBox', `0 0 ${map.width} ${map.height}`);
   area2.setAttribute('x', map.width - 90);
   area2.setAttribute('y', map.height - 90);
+  piramide2.setAttribute('x', map.width - 90);
+  piramide2.setAttribute('y', map.height - 90);
 });
 
 // Añadir listener para soltar rocas
