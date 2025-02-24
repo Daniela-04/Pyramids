@@ -115,6 +115,18 @@ export class Game {
         if (!this.getWinner()) {
           if (player.team === 'blue') this.bluePyramid.addStone();
           else this.purplePyramid.addStone();
+
+          // Generar un nuevo ladrillo aleatorio
+          const position = this.map.generateRandomPosition();
+          if (this.map.isPositionAvailable(position.x, position.y)) {
+            const newStone = {
+              id: `brick${Date.now()}`,
+              x: position.x,
+              y: position.y
+            };
+            this.map.stones.push(newStone);
+            WebSocketHandler.broadcast('bricks', this.map.stones);
+          }
         } else {
           this.stop(true);
         }
