@@ -6,6 +6,7 @@ export class Admin {
     console.log('Configurando juego:', settings);
     Game.configureMap(settings);
     WebSocketHandler.broadcast('mapUpdated', settings);
+    WebSocketHandler.broadcast('setPyramid', settings.pisos);
   }
 
   static startGame () {

@@ -3,6 +3,8 @@ const socket = io('http://localhost:8180');
 const svg = document.getElementById('gameMap');
 const area2 = document.getElementById('area2');
 const pisos = document.getElementById('pisos');
+const piramide1 = document.getElementById('piramide1');
+const piramide2 = document.getElementById('piramide2');
 
 socket.emit('join', 'player');
 
@@ -174,6 +176,20 @@ socket.on('mapUpdated', (map) => {
   pisos.value = map.pisos;
 });
 
+socket.on('setPyramid', (pisos) => {
+  actualizarPisos(pisos, piramide1);
+  actualizarPisos(pisos, piramide2);
+});
+
+socket.on('newStone', (data) => {
+  const { currentStones, remainingLevels, team } = data;
+  console.log(data);
+  const piramide = team === 'purple' ? piramide1 : piramide2;
+  console.log(`#ladrillo_F${remainingLevels}-${currentStones}`);
+
+  piramide.querySelector(`#ladrillo_F${remainingLevels}-${currentStones}`).classList.remove('gray');
+});
+
 let isUpdating = false;
 
 function update () {
@@ -186,4 +202,12 @@ function update () {
       update();
     });
   }
+}
+
+function actualizarPisos (nPisos) {
+  document.querySelectorAll("[id$='-F5'], [id$='-F6'], [id$='-F7'], [id$='-F8']").forEach(figura => {
+    const pisoNumero = parseInt(figura.id.split('-F')[1], 10);
+
+    figura.style.display = (pisoNumero <= nPisos) ? 'block' : 'none';
+  });
 }

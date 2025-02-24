@@ -9,7 +9,8 @@ export class Game {
   constructor () {
     this.players = [];
     this.blueTeam = false;
-    this.pyramid = new Pyramid();
+    this.bluePyramid = new Pyramid();
+    this.purplePyramid = new Pyramid();
     this.map = new Map();
     this.isRunning = false;
     this.interval = null;
@@ -52,11 +53,19 @@ export class Game {
     }, 500);
   }
 
-  stop () {
+  stop (win = false) {
     console.log('Juego detenido');
     this.isRunning = false;
     clearInterval(this.interval);
-    WebSocketHandler.broadcast('gameStop', { message: 'El administrador ha detenido el juego' });
+    if (!win) { WebSocketHandler.broadcast('gameStop', { message: 'El administrador ha detenido el juego' }); } else {
+      WebSocketHandler.broadcast('gameStop', { message: `El Equipo ${this.getWinner()}ha ganado` });
+    }
+  }
+
+  getWinner () {
+    if (this.bluePyramid.isCompleted()) return 'Azul';
+    if (this.purplePyramid.isCompleted()) return 'Morado';
+    return null;
   }
 
   addPlayer (playerId, socket) {
@@ -91,19 +100,31 @@ export class Game {
   dropBrick ({ playerId, x, y }) {
     const player = this.players.find(player => player.id === playerId);
     if (player && player.hasStone) {
-      const newStone = {
-        id: `brick${Date.now()}`,
-        x,
-        y
-      };
-      this.map.stones.push(newStone);
-      player.dropStone();
-      WebSocketHandler.broadcast('bricks', this.map.stones);
-      WebSocketHandler.broadcast('drawPlayers', this.playersToArray());
+      if (!this.map.checkAreaColission(x, y, player.team)) {
+        const newStone = {
+          id: `brick${Date.now()}`,
+          x,
+          y
+        };
+        this.map.stones.push(newStone);
+        player.dropStone();
+        WebSocketHandler.broadcast('bricks', this.map.stones);
+        WebSocketHandler.broadcast('drawPlayers', this.playersToArray());
+      } else {
+        player.dropStone();
+        if (!this.getWinner()) {
+          if (player.team === 'blue') this.bluePyramid.addStone();
+          else this.purplePyramid.addStone();
+        } else {
+          this.stop(true);
+        }
+      }
     }
   }
 
   configureMap (settings) {
+    this.bluePyramid = new Pyramid(settings.pisos, 'blue');
+    this.purplePyramid = new Pyramid(settings.pisos, 'purple');
     this.map = new Map(settings.width, settings.height);
   }
 

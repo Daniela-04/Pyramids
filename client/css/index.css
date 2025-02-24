@@ -1,3 +1,9 @@
+.gray * {
+  fill: #b5b5b590 !important;
+}
+
+
+
 .body_container {
   height: 100vh;
   display: grid;

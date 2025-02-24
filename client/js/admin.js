@@ -9,6 +9,8 @@ const width = document.getElementById('width');
 const height = document.getElementById('height');
 const pisos = document.getElementById('pisos');
 const svg = document.getElementById('gameMap');
+const piramide1 = document.getElementById('piramide1');
+const piramide2 = document.getElementById('piramide2');
 const area2 = document.getElementById('area2');
 
 // Definir el objeto map
@@ -40,6 +42,11 @@ engegerButton.addEventListener('click', (event) => {
     gameRunning = false;
     socket.emit('gameStopped');
   }
+});
+
+socket.on('setPyramid', (pisos) => {
+  actualizarPisos(pisos, piramide1);
+  actualizarPisos(pisos, piramide2);
 });
 
 // Recibir y mostrar ladrillos
@@ -94,6 +101,15 @@ socket.on('drawPlayers', (players) => {
   drawPlayers(players);
 });
 
+socket.on('newStone', (data) => {
+  const { currentStones, remainingLevels, team } = data;
+  console.log(data);
+  const piramide = team === 'purple' ? piramide1 : piramide2;
+  console.log(`#ladrillo_F${remainingLevels}-${currentStones}`);
+
+  piramide.querySelector(`#ladrillo_F${remainingLevels}-${currentStones}`).classList.remove('gray');
+});
+
 function drawPlayers (players) {
   const playersGroup = document.getElementById('players');
 
@@ -123,5 +139,13 @@ function drawPlayers (players) {
 
   existingPlayers.forEach((playerElement) => {
     playersGroup.removeChild(playerElement);
+  });
+}
+
+function actualizarPisos (nPisos) {
+  document.querySelectorAll("[id$='-F5'], [id$='-F6'], [id$='-F7'], [id$='-F8']").forEach(figura => {
+    const pisoNumero = parseInt(figura.id.split('-F')[1], 10);
+
+    figura.style.display = (pisoNumero <= nPisos) ? 'block' : 'none';
   });
 }

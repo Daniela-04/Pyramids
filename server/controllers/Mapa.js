@@ -24,6 +24,16 @@ export default class Map {
     return x >= 0 && x < this.width && y >= 0 && y < this.height;
   }
 
+  checkAreaColission (x, y, team) {
+    if (team === 'purple') {
+      if (x >= 0 && x <= 90 && y >= 0 && y <= 90) return true;
+    } else {
+      if (x >= this.width - 90 && x <= this.width && y >= this.height - 90 && y <= this.height) return true;
+    }
+
+    return false;
+  }
+
   generateRandomPosition () {
     const x = Math.floor(Math.random() * (this.width - 20));
     const y = Math.floor(Math.random() * (this.height - 20));
