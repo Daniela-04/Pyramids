@@ -65,21 +65,73 @@ socket.on('gameStopped', () => {
   window.location.href = '/player';
 });
 
+// Modificar la función movePlayer
 function movePlayer () {
   let newX = dataPlayer.x;
   let newY = dataPlayer.y;
 
+  // Guardar la posición anterior
+  const oldX = newX;
+  const oldY = newY;
+
+  // Mover basado en las teclas presionadas
   if (moving.up) newY = Math.max(0, dataPlayer.y - dataPlayer.speed);
   if (moving.down) newY = Math.min(svg.getAttribute('height') - 40, dataPlayer.y + dataPlayer.speed);
   if (moving.left) newX = Math.max(0, dataPlayer.x - dataPlayer.speed);
   if (moving.right) newX = Math.min(svg.getAttribute('width') - 40, dataPlayer.x + dataPlayer.speed);
 
-  // Si las coordenadas han cambiado, enviarlas al servidor
+  // Verificar colisión con otros jugadores
+  if (checkPlayerCollision(newX, newY)) {
+    // Si hay colisión, mantener la posición anterior
+    newX = oldX;
+    newY = oldY;
+  }
+
+  // Si las coordenadas han cambiado y no hay colisión, actualizar
   if (newX !== dataPlayer.x || newY !== dataPlayer.y) {
     dataPlayer.x = newX;
     dataPlayer.y = newY;
     socket.emit('move', dataPlayer);
+
+    const playerElement = document.getElementById(dataPlayer.id);
+    if (playerElement) {
+      playerElement.setAttribute('x', newX);
+      playerElement.setAttribute('y', newY);
+    }
   }
+}
+
+function checkCollisionBetweenRects (rect1, rect2) {
+  return rect1.x < rect2.x + rect2.width &&
+         rect1.x + rect1.width > rect2.x &&
+         rect1.y < rect2.y + rect2.height &&
+         rect1.y + rect1.height > rect2.y;
+}
+
+function checkPlayerCollision (newX, newY) {
+  const playerRect = {
+    x: newX,
+    y: newY,
+    width: 40,
+    height: 40
+  };
+
+  for (const id in currentPlayers) {
+    if (id === dataPlayer.id) continue; // Ignorar el jugador actual
+
+    const otherPlayer = currentPlayers[id];
+    const otherPlayerRect = {
+      x: otherPlayer.position.x,
+      y: otherPlayer.position.y,
+      width: 40,
+      height: 40
+    };
+
+    if (checkCollisionBetweenRects(playerRect, otherPlayerRect)) {
+      return true;
+    }
+  }
+  return false;
 }
 
 function checkCollisionWithBricks () {
@@ -155,9 +207,10 @@ function drawPlayers () {
 }
 
 // Añadir listener para el mensaje de inicio del juego
+// Asegurarse de que update() se inicie cuando comienza el juego
 socket.on('gameStart', (data) => {
   window.alert(data.message);
-  update();
+  update(); // Iniciar el bucle de actualización
 });
 
 // Añadir listener para el mensaje de parada
@@ -194,12 +247,12 @@ socket.on('newStone', (data) => {
 
 let isUpdating = false;
 
+// Modificar la función update para que se ejecute continuamente
 function update () {
   if (!isUpdating) {
     isUpdating = true;
     window.requestAnimationFrame(() => {
-      movePlayer();
-      drawPlayers();
+      movePlayer(); // Mover al jugador si hay teclas presionadas
       isUpdating = false;
       update();
     });
