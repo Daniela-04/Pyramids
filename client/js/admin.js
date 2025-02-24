@@ -1,7 +1,10 @@
 // eslint-disable-next-line no-undef
 const socket = io('http://localhost:8180');
 let gameRunning = false;
+let mapConfigured = false;
+
 const engegerButton = document.querySelector('#engegar');
+const configurarButton = document.querySelector('#configurar');
 
 socket.emit('join', 'admin');
 
@@ -19,7 +22,7 @@ const map = {
 };
 
 // Configurar mapa
-document.querySelector('#configurar').addEventListener('click', (event) => {
+configurarButton.addEventListener('click', (event) => {
   const settings = {
     width: parseInt(width.value),
     height: parseInt(height.value),
@@ -27,21 +30,29 @@ document.querySelector('#configurar').addEventListener('click', (event) => {
   };
 
   socket.emit('inicializeMap', settings);
+  mapConfigured = true;
+  engegerButton.style.display = 'block';
+  configurarButton.style.display = 'none';
 });
 
 // Iniciar/Parar juego
 engegerButton.addEventListener('click', (event) => {
   if (!gameRunning) {
+    if (!mapConfigured) {
+      window.alert('Primero debes configurar el mapa.');
+      return;
+    }
     socket.emit('iniciar');
     engegerButton.textContent = 'Parar';
     engegerButton.classList.add('stopping');
     gameRunning = true;
+    configurarButton.style.display = 'none';
   } else {
     socket.emit('stopGame');
     engegerButton.textContent = 'Engegar';
     engegerButton.classList.remove('stopping');
     gameRunning = false;
-    socket.emit('gameStopped');
+    configurarButton.style.display = 'block';
   }
 });
 
@@ -72,8 +83,12 @@ socket.on('gameStop', () => {
   const stonesGroup = document.getElementById('stones');
   stonesGroup.innerHTML = ''; // Eliminar todas las rocas
   const playersGroup = document.getElementById('players');
-  playersGroup.innerHTML = '';// Eliminar todos los jugadores
+  playersGroup.innerHTML = ''; // Eliminar todos los jugadores
   window.alert('El juego ha sido detenido');
+  gameRunning = false;
+  engegerButton.textContent = 'Engegar';
+  engegerButton.classList.remove('stopping');
+  configurarButton.style.display = 'block';
 });
 
 socket.on('mapUpdated', (map) => {
