@@ -17,7 +17,7 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
         window.location.href = '/choose';
       } else {
         const errorData = await response.json();
-        errorContent.textContent = errorData.error;
+        errorContent.textContent = errorData.message;
         errorContainer.removeAttribute('hidden');
       }
     } catch (error) {

@@ -1,3 +1,3 @@
 document.getElementById('cerrarSesionButton').addEventListener('click', function () {
-  window.location.href = '/';
+  window.location.href = '/choose';
 });

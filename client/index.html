@@ -7,20 +7,19 @@
 	<link rel="stylesheet" href="css/reset.css">
 	<link rel="stylesheet" type="text/css" href="css/login.css">
 	<link rel="icon" href="assets/favicon.ico" type="image/x-icon">
-	<script type="module" src="js/login.js"></script>
+	<!-- <script type="module" src="js/login.js"></script> -->
 </head>
 
 <body>
 	<div class="container">
 		<div class="form__container">
-			<div class="heading">Iniciar sessió</div>
+			<div class="heading">Identificat per continuar</div>
 			<div id="error" class="card card--shadow error" hidden>
 				<div class="card__content"></div>
 			</div>
-			<form id="login-form" class="form">
-				<input placeholder="E-mail" id="email" name="email" type="email" class="input" required="" />
-				<input value="Iniciar sessió" type="submit" class="login-button" />
-			</form>
+			<div id="login-form" class="form">
+				<a href="/auth/google" class="login-button">Iniciar sessió</a>
+			</div>
 		</div>
 	</div>
 </body>
