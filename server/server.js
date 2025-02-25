@@ -28,7 +28,7 @@ export class Server {
     this.app.use(express.static(this.publicPath));
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
-    this.app.use(session({ secret: process.env.SESSION_SECRET, resave: false, saveUninitialized: true }));
+    this.app.use(session({ secret: process.env.SESSION_SECRET, resave: false, saveUninitialized: true, cookie: { secure: false, expires: null, maxAge: null } }));
     this.app.use(passport.initialize());
     this.app.use(passport.session());
   }

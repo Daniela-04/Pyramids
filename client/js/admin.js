@@ -130,7 +130,6 @@ socket.on('newStone', (data) => {
 
 function drawPlayers (players) {
   const playersGroup = document.getElementById('players');
-
   const existingPlayers = new Map();
   playersGroup.childNodes.forEach((child) => {
     if (child.id) existingPlayers.set(child.id, child);
@@ -138,7 +137,11 @@ function drawPlayers (players) {
 
   players.forEach((player) => {
     let playerElement = existingPlayers.get(player.id);
-    const teamColor = player.team === 'blue' ? '../assets/img/fotoPlayer.png' : '../assets/img/fotoPlayer2.png';
+    let teamColor = player.team === 'blue' ? '../assets/img/player.png' : '../assets/img/player2.png';
+    if (player.hasStone) {
+      console.log('Tiene piedra');
+      teamColor = player.team === 'blue' ? '../assets/img/player_stone.png' : '../assets/img/player2_stone.png';
+    }
 
     if (!playerElement) {
       playerElement = document.createElementNS('http://www.w3.org/2000/svg', 'image');
@@ -148,7 +151,7 @@ function drawPlayers (players) {
       playerElement.setAttributeNS(null, 'height', '40');
       playersGroup.appendChild(playerElement);
     }
-
+    playerElement.setAttributeNS('http://www.w3.org/1999/xlink', 'href', teamColor);
     playerElement.setAttributeNS(null, 'x', player.position.x);
     playerElement.setAttributeNS(null, 'y', player.position.y);
 

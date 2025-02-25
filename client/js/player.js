@@ -52,6 +52,7 @@ socket.on('coordinates', (data) => {
   dataPlayer.y = data.y;
   dataPlayer.speed = data.speed;
   dataPlayer.hasStone = data.hasStone;
+  dataPlayer.team = data.team;
   console.log(dataPlayer);
 });
 // Añadir listener para el mensaje de juego en curso
@@ -103,9 +104,9 @@ function movePlayer () {
 
 function checkCollisionBetweenRects (rect1, rect2) {
   return rect1.x < rect2.x + rect2.width &&
-         rect1.x + rect1.width > rect2.x &&
-         rect1.y < rect2.y + rect2.height &&
-         rect1.y + rect1.height > rect2.y;
+    rect1.x + rect1.width > rect2.x &&
+    rect1.y < rect2.y + rect2.height &&
+    rect1.y + rect1.height > rect2.y;
 }
 
 function checkPlayerCollision (newX, newY) {
@@ -153,9 +154,9 @@ function checkCollisionWithBricks () {
     };
 
     if (playerRect.x < brickRect.x + brickRect.width &&
-        playerRect.x + playerRect.width > brickRect.x &&
-        playerRect.y < brickRect.y + brickRect.height &&
-        playerRect.y + playerRect.height > brickRect.y) {
+      playerRect.x + playerRect.width > brickRect.x &&
+      playerRect.y < brickRect.y + brickRect.height &&
+      playerRect.y + playerRect.height > brickRect.y) {
       return brickRect;
     }
   }
@@ -189,11 +190,13 @@ socket.on('drawPlayers', (players) => {
 
 function drawPlayers () {
   const playersGroup = document.getElementById('players');
-
   playersGroup.innerHTML = '';
   for (const id in currentPlayers) {
     const player = currentPlayers[id];
-    const teamColor = player.team === 'blue' ? '../assets/img/fotoPlayer.png' : '../assets/img/fotoPlayer2.png';
+    let teamColor = player.team === 'blue' ? '../assets/img/player.png' : '../assets/img/player2.png';
+    if (player.hasStone) {
+      teamColor = player.team === 'blue' ? '../assets/img/player_stone.png' : '../assets/img/player2_stone.png';
+    }
 
     const playerElement = document.createElementNS('http://www.w3.org/2000/svg', 'image');
     playerElement.setAttributeNS('http://www.w3.org/1999/xlink', 'href', teamColor);
