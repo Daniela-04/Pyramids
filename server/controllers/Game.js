@@ -28,7 +28,7 @@ export class Game {
   }
 
   start () {
-    console.log('Juego iniciado');
+
     this.isRunning = true;
     this.map.stones = []; // Reiniciar las rocas generadas
     WebSocketHandler.broadcast('bricks', this.map.stones); // Limpiar las rocas en los clientes
@@ -45,7 +45,6 @@ export class Game {
           this.map.stones.push({ ...position, id: `brick${stonesGenerated}` });
           stonesGenerated++;
           WebSocketHandler.broadcast('bricks', this.map.stones);
-          // console.log(this.map.stones);
         }
       } else {
         clearInterval(this.interval);
@@ -54,7 +53,6 @@ export class Game {
   }
 
   stop (win = false) {
-    console.log('Juego detenido');
     this.isRunning = false;
     clearInterval(this.interval);
     if (!win) { WebSocketHandler.broadcast('gameStop', { message: 'El administrador ha detenido el juego' }); } else {

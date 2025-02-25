@@ -45,6 +45,10 @@ export class Server {
     WebSocketHandler.init();
     Game.init();
   }
+
+  static getApp () {
+    return this.app;
+  }
 }
 
 // Ejecutar el servidor

@@ -53,7 +53,6 @@ socket.on('coordinates', (data) => {
   dataPlayer.speed = data.speed;
   dataPlayer.hasStone = data.hasStone;
   dataPlayer.team = data.team;
-  console.log(dataPlayer);
 });
 // Añadir listener para el mensaje de juego en curso
 // Mostramos mensaje en pantalla
@@ -241,9 +240,7 @@ socket.on('setPyramid', (pisos) => {
 
 socket.on('newStone', (data) => {
   const { currentStones, remainingLevels, team } = data;
-  console.log(data);
   const piramide = team === 'purple' ? piramide1 : piramide2;
-  console.log(`#ladrillo_F${remainingLevels}-${currentStones}`);
 
   piramide.querySelector(`#ladrillo_F${remainingLevels}-${currentStones}`).classList.remove('gray');
 });
