@@ -6,6 +6,7 @@ let mapConfigured = false;
 const engegerButton = document.querySelector('#engegar');
 const configurarButton = document.querySelector('#configurar');
 
+// agregar el jugador a la sala
 socket.emit('join', 'admin');
 
 const width = document.getElementById('width');
@@ -56,6 +57,7 @@ engegerButton.addEventListener('click', (event) => {
   }
 });
 
+// Actualizar pirámides
 socket.on('setPyramid', (pisos) => {
   actualizarPisos(pisos, piramide1);
   actualizarPisos(pisos, piramide2);
@@ -91,6 +93,7 @@ socket.on('gameStop', () => {
   configurarButton.style.display = 'block';
 });
 
+// Actualizar mapa
 socket.on('mapUpdated', (map) => {
   svg.setAttribute('width', map.width);
   svg.setAttribute('height', map.height);
@@ -119,15 +122,17 @@ socket.on('drawPlayers', (players) => {
   drawPlayers(players);
 });
 
+// Actualizar ladrillos en pirámides
 socket.on('newStone', (data) => {
   const { currentStones, remainingLevels, team } = data;
-  console.log(data);
   const piramide = team === 'purple' ? piramide1 : piramide2;
-  console.log(`#ladrillo_F${remainingLevels}-${currentStones}`);
-
   piramide.querySelector(`#ladrillo_F${remainingLevels}-${currentStones}`).classList.remove('gray');
 });
 
+/**
+ * Dibuja los jugadores en el mapa
+ * @param {Array} players - Lista de jugadores
+ */
 function drawPlayers (players) {
   const playersGroup = document.getElementById('players');
   const existingPlayers = new Map();
@@ -139,7 +144,6 @@ function drawPlayers (players) {
     let playerElement = existingPlayers.get(player.id);
     let teamColor = player.team === 'blue' ? '../assets/img/player.png' : '../assets/img/player2.png';
     if (player.hasStone) {
-      console.log('Tiene piedra');
       teamColor = player.team === 'blue' ? '../assets/img/player_stone.png' : '../assets/img/player2_stone.png';
     }
 
@@ -163,8 +167,13 @@ function drawPlayers (players) {
   });
 }
 
-function actualizarPisos (nPisos) {
-  document.querySelectorAll("[id$='-F5'], [id$='-F6'], [id$='-F7'], [id$='-F8']").forEach(figura => {
+/**
+ * Actualiza la visualización de los pisos de las pirámides
+ * @param {number} nPisos - Número de pisos
+ * @param {Element} piramide - Elemento de la pirámide a actualizar
+ */
+function actualizarPisos (nPisos, piramide) {
+  piramide.querySelectorAll("[id$='-F5'], [id$='-F6'], [id$='-F7'], [id$='-F8']").forEach(figura => {
     const pisoNumero = parseInt(figura.id.split('-F')[1], 10);
 
     figura.style.display = (pisoNumero <= nPisos) ? 'block' : 'none';

@@ -9,6 +9,11 @@ export default class WebSocketHandler {
   static #io;
   static #eventListeners = new Map();
 
+  /**
+   * Inicializa el servidor WebSocket
+   * Crea el servidor HTTP y el servidor de WebSocket
+   * Configura el manejo de conexiones
+   */
   static init () {
     this.#httpServer = createServer();
     this.#io = new Server(this.#httpServer, { cors: { origin: '*' } });
@@ -40,7 +45,6 @@ export default class WebSocketHandler {
     });
 
     socket.on('inicializeMap', (settings) => {
-      // console.log('Admin configuró el mapa:', settings);
       this.#emitEvent('configureGame', settings);
     });
 
@@ -54,7 +58,6 @@ export default class WebSocketHandler {
           this.#emitEvent('join', socket.id, socket);
         }
       }
-      // console.log(this.#eventListeners);
     });
 
     socket.on('move', (coords) => {
@@ -63,12 +66,10 @@ export default class WebSocketHandler {
     });
 
     socket.on('recoger', (data) => {
-      console.log(`Cliente ${data.playerId} ha recogido la piedra ${data.brickId}`);
       this.#emitEvent('recoger', data);
     });
 
     socket.on('soltar', (data) => {
-      console.log(`Cliente ${data.playerId} ha soltado la piedra en (${data.x}, ${data.y})`);
       this.#emitEvent('soltar', data);
     });
 
@@ -88,7 +89,6 @@ export default class WebSocketHandler {
    * @param {string} event - El nombre del evento al que se va a registrar el callback.
    * @param {function} callback - El callback que se va a ejecutar cuando se emita el evento.
    */
-
   static on (event, callback) {
     this.#eventListeners.set(event, callback);
   }
@@ -107,12 +107,11 @@ export default class WebSocketHandler {
   }
 
   /**
-   * Broadcasts an event with the specified data to all connected clients.
+   * Emite un evento a todos los clientes conectados.
    *
-   * @param {string} event - The name of the event to broadcast.
-   * @param {*} data - The data to send with the event to all clients.
+   * @param {string} event - El nombre del evento a emitir.
+   * @param {*} data - Los datos que se van a enviar con el evento a todos los clientes.
    */
-
   static broadcast (event, data) {
     this.#io.emit(event, data);
   }

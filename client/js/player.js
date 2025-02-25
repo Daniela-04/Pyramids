@@ -10,6 +10,7 @@ socket.emit('join', 'player');
 
 const moving = { up: false, down: false, left: false, right: false };
 
+// Manejo de eventos de teclado
 document.addEventListener('keydown', (event) => {
   if (['w', 'ArrowUp'].includes(event.key)) moving.up = true;
   if (['s', 'ArrowDown'].includes(event.key)) moving.down = true;
@@ -45,6 +46,7 @@ document.addEventListener('keyup', (event) => {
   if (['d', 'ArrowRight'].includes(event.key)) moving.right = false;
 });
 
+// Manejo de datos del jugador
 const dataPlayer = {};
 socket.on('coordinates', (data) => {
   dataPlayer.id = data.id;
@@ -53,20 +55,77 @@ socket.on('coordinates', (data) => {
   dataPlayer.speed = data.speed;
   dataPlayer.hasStone = data.hasStone;
   dataPlayer.team = data.team;
-  console.log(dataPlayer);
 });
-// Añadir listener para el mensaje de juego en curso
-// Mostramos mensaje en pantalla
+
+// Listeners de eventos de WebSocket
 socket.on('gameRunning', (data) => {
   window.location.href = '/lobby';
 });
 
-// Recargamos pagina sin gameStopped = false
 socket.on('gameStopped', () => {
   window.location.href = '/player';
 });
 
-// Modificar la función movePlayer
+socket.on('gameStart', (data) => {
+  window.alert(data.message);
+  update(); // Iniciar el bucle de actualización
+});
+
+socket.on('gameStop', (data) => {
+  const playersGroup = document.getElementById('players');
+  playersGroup.innerHTML = '';
+  window.alert(data.message);
+});
+
+socket.on('mapUpdated', (map) => {
+  svg.setAttribute('width', map.width);
+  svg.setAttribute('height', map.height);
+  svg.setAttribute('viewBox', `0 0 ${map.width} ${map.height}`);
+  area2.setAttribute('x', map.width - 90);
+  area2.setAttribute('y', map.height - 90);
+  piramide2.setAttribute('x', map.width - 90);
+  piramide2.setAttribute('y', map.height - 90);
+  pisos.value = map.pisos;
+});
+
+socket.on('setPyramid', (pisos) => {
+  actualizarPisos(pisos, piramide1);
+  actualizarPisos(pisos, piramide2);
+});
+
+socket.on('newStone', (data) => {
+  const { currentStones, remainingLevels, team } = data;
+  const piramide = team === 'purple' ? piramide1 : piramide2;
+  piramide.querySelector(`#ladrillo_F${remainingLevels}-${currentStones}`).classList.remove('gray');
+});
+
+socket.on('bricks', (bricks) => {
+  const stonesGroup = document.getElementById('stones');
+  stonesGroup.innerHTML = '';
+  bricks.forEach((brick) => {
+    const brickElement = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+    brickElement.setAttributeNS(null, 'href', '../assets/mapElements/ladrillo.png');
+    brickElement.setAttributeNS(null, 'x', brick.x);
+    brickElement.setAttributeNS(null, 'y', brick.y);
+    brickElement.setAttributeNS(null, 'width', '20');
+    brickElement.setAttributeNS(null, 'height', '20');
+    brickElement.setAttributeNS(null, 'id', brick.id);
+    stonesGroup.appendChild(brickElement);
+  });
+});
+
+let currentPlayers = {};
+socket.on('drawPlayers', (players) => {
+  currentPlayers = {};
+  players.forEach(player => {
+    currentPlayers[player.id] = player;
+  });
+  drawPlayers();
+});
+
+/**
+ * Mueve al jugador en función de las teclas presionadas
+ */
 function movePlayer () {
   let newX = dataPlayer.x;
   let newY = dataPlayer.y;
@@ -109,6 +168,12 @@ function checkCollisionBetweenRects (rect1, rect2) {
     rect1.y + rect1.height > rect2.y;
 }
 
+/**
+ * Verifica colisión con otros jugadores
+ * @param {number} newX - Nueva coordenada x
+ * @param {number} newY - Nueva coordenada y
+ * @returns {boolean} True si hay colisión, false en caso contrario
+ */
 function checkPlayerCollision (newX, newY) {
   const playerRect = {
     x: newX,
@@ -135,6 +200,10 @@ function checkPlayerCollision (newX, newY) {
   return false;
 }
 
+/**
+ * Verifica colisión con ladrillos
+ * @returns {Object|null} El ladrillo con el que colisiona o null si no hay colisión
+ */
 function checkCollisionWithBricks () {
   const stonesGroup = document.getElementById('stones');
   const playerRect = {
@@ -163,31 +232,9 @@ function checkCollisionWithBricks () {
   return null;
 }
 
-// Añadir el listener para las rocas
-socket.on('bricks', (bricks) => {
-  const stonesGroup = document.getElementById('stones');
-  stonesGroup.innerHTML = '';
-  bricks.forEach((brick) => {
-    const brickElement = document.createElementNS('http://www.w3.org/2000/svg', 'image');
-    brickElement.setAttributeNS(null, 'href', '../assets/mapElements/ladrillo.png');
-    brickElement.setAttributeNS(null, 'x', brick.x);
-    brickElement.setAttributeNS(null, 'y', brick.y);
-    brickElement.setAttributeNS(null, 'width', '20');
-    brickElement.setAttributeNS(null, 'height', '20');
-    brickElement.setAttributeNS(null, 'id', brick.id);
-    stonesGroup.appendChild(brickElement);
-  });
-});
-
-let currentPlayers = {};
-socket.on('drawPlayers', (players) => {
-  currentPlayers = {};
-  players.forEach(player => {
-    currentPlayers[player.id] = player;
-  });
-  drawPlayers();
-});
-
+/**
+ * Dibuja los jugadores en el mapa
+ */
 function drawPlayers () {
   const playersGroup = document.getElementById('players');
   playersGroup.innerHTML = '';
@@ -209,48 +256,24 @@ function drawPlayers () {
   }
 }
 
-// Añadir listener para el mensaje de inicio del juego
-// Asegurarse de que update() se inicie cuando comienza el juego
-socket.on('gameStart', (data) => {
-  window.alert(data.message);
-  update(); // Iniciar el bucle de actualización
-});
+/**
+ * Actualiza la visualización de los pisos de las pirámides
+ * @param {number} nPisos - Número de pisos
+ * @param {Element} piramide - Elemento de la pirámide a actualizar
+ */
+function actualizarPisos (nPisos, piramide) {
+  piramide.querySelectorAll("[id$='-F5'], [id$='-F6'], [id$='-F7'], [id$='-F8']").forEach(figura => {
+    const pisoNumero = parseInt(figura.id.split('-F')[1], 10);
 
-// Añadir listener para el mensaje de parada
-socket.on('gameStop', (data) => {
-  const playersGroup = document.getElementById('players');
-  playersGroup.innerHTML = '';
-  window.alert(data.message);
-});
-
-socket.on('mapUpdated', (map) => {
-  svg.setAttribute('width', map.width);
-  svg.setAttribute('height', map.height);
-  svg.setAttribute('viewBox', `0 0 ${map.width} ${map.height}`);
-  area2.setAttribute('x', map.width - 90);
-  area2.setAttribute('y', map.height - 90);
-  piramide2.setAttribute('x', map.width - 90);
-  piramide2.setAttribute('y', map.height - 90);
-  pisos.value = map.pisos;
-});
-
-socket.on('setPyramid', (pisos) => {
-  actualizarPisos(pisos, piramide1);
-  actualizarPisos(pisos, piramide2);
-});
-
-socket.on('newStone', (data) => {
-  const { currentStones, remainingLevels, team } = data;
-  console.log(data);
-  const piramide = team === 'purple' ? piramide1 : piramide2;
-  console.log(`#ladrillo_F${remainingLevels}-${currentStones}`);
-
-  piramide.querySelector(`#ladrillo_F${remainingLevels}-${currentStones}`).classList.remove('gray');
-});
+    figura.style.display = (pisoNumero <= nPisos) ? 'block' : 'none';
+  });
+}
 
 let isUpdating = false;
 
-// Modificar la función update para que se ejecute continuamente
+/**
+ * Bucle de actualización continua
+ */
 function update () {
   if (!isUpdating) {
     isUpdating = true;
@@ -260,12 +283,4 @@ function update () {
       update();
     });
   }
-}
-
-function actualizarPisos (nPisos) {
-  document.querySelectorAll("[id$='-F5'], [id$='-F6'], [id$='-F7'], [id$='-F8']").forEach(figura => {
-    const pisoNumero = parseInt(figura.id.split('-F')[1], 10);
-
-    figura.style.display = (pisoNumero <= nPisos) ? 'block' : 'none';
-  });
 }

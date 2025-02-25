@@ -3,6 +3,10 @@ import passport from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 
 export class AuthController {
+  /**
+   * Inicializa el controlador de autenticación
+   * Configura dotenv y la estrategia de autenticación de Google
+   */
   static initialize () {
     dotenv.config();
     passport.use(new GoogleStrategy({

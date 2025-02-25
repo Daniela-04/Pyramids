@@ -16,6 +16,10 @@ export class Game {
     this.interval = null;
   }
 
+  /**
+   * Inicializa el juego
+   * Configura los eventos de WebSocket
+   */
   init () {
     WebSocketHandler.on('startGame', () => Admin.startGame());
     WebSocketHandler.on('configureGame', (settings) => Admin.configureGame(settings));
@@ -27,8 +31,11 @@ export class Game {
     WebSocketHandler.on('soltar', this.dropBrick.bind(this));
   }
 
+  /**
+   * Inicia el juego
+   * Genera piedras en el mapa y las transmite a los clientes
+   */
   start () {
-    console.log('Juego iniciado');
     this.isRunning = true;
     this.map.stones = []; // Reiniciar las rocas generadas
     WebSocketHandler.broadcast('bricks', this.map.stones); // Limpiar las rocas en los clientes
@@ -45,7 +52,6 @@ export class Game {
           this.map.stones.push({ ...position, id: `brick${stonesGenerated}` });
           stonesGenerated++;
           WebSocketHandler.broadcast('bricks', this.map.stones);
-          // console.log(this.map.stones);
         }
       } else {
         clearInterval(this.interval);
@@ -53,21 +59,35 @@ export class Game {
     }, 500);
   }
 
+  /**
+   * Detiene el juego
+   * @param {boolean} win - Indica si el juego se detuvo por una victoria
+   */
   stop (win = false) {
-    console.log('Juego detenido');
     this.isRunning = false;
     clearInterval(this.interval);
-    if (!win) { WebSocketHandler.broadcast('gameStop', { message: 'El administrador ha detenido el juego' }); } else {
-      WebSocketHandler.broadcast('gameStop', { message: `El Equipo ${this.getWinner()}ha ganado` });
+    if (!win) {
+      WebSocketHandler.broadcast('gameStop', { message: 'El administrador ha detenido el juego' });
+    } else {
+      WebSocketHandler.broadcast('gameStop', { message: `El Equipo ${this.getWinner()} ha ganado` });
     }
   }
 
+  /**
+   * Obtiene el equipo ganador
+   * @returns {string|null} El nombre del equipo ganador o null si no hay ganador
+   */
   getWinner () {
     if (this.bluePyramid.isCompleted()) return 'Azul';
     if (this.purplePyramid.isCompleted()) return 'Morado';
     return null;
   }
 
+  /**
+   * Añade un jugador a la lista de jugadores
+   * @param {string} playerId - Identificador del jugador
+   * @param {Socket} socket - Socket del jugador
+   */
   addPlayer (playerId, socket) {
     this.blueTeam = !this.blueTeam;
     const player = new Player(playerId, 'Player');
@@ -78,6 +98,11 @@ export class Game {
     socket.emit('coordinates', { id: playerId, x: position.x, y: position.y, speed: configs.player.speed, hasStone: player.hasStone });
   }
 
+  /**
+   * Mueve un jugador a una nueva posición
+   * @param {Object} coords - Coordenadas del jugador
+   * @param {Socket} socket - Socket del jugador
+   */
   movePlayer (coords, socket) {
     const playerId = socket.id;
     const player = this.players.find((player) => player.id === playerId);
@@ -87,6 +112,10 @@ export class Game {
     }
   }
 
+  /**
+   * Recoge una piedra
+   * @param {Object} data - Datos del jugador y la piedra
+   */
   pickUpBrick ({ playerId, brickId }) {
     const player = this.players.find(player => player.id === playerId);
     if (player && !player.hasStone) {
@@ -97,6 +126,10 @@ export class Game {
     }
   }
 
+  /**
+   * Deja una piedra
+   * @param {Object} data - Datos del jugador y la posición
+   */
   dropBrick ({ playerId, x, y }) {
     const player = this.players.find(player => player.id === playerId);
     if (player && player.hasStone) {
@@ -134,26 +167,37 @@ export class Game {
     }
   }
 
+  /**
+   * Configura el mapa del juego
+   * @param {Object} settings - Configuraciones del mapa
+   */
   configureMap (settings) {
     this.bluePyramid = new Pyramid(settings.pisos, 'blue');
     this.purplePyramid = new Pyramid(settings.pisos, 'purple');
     this.map = new Map(settings.width, settings.height);
   }
 
+  /**
+   * Elimina un jugador del juego
+   * @param {string} playerId - Identificador del jugador
+   */
   removePlayer (playerId) {
     this.players = this.players.filter(player => player.id !== playerId);
     WebSocketHandler.broadcast('drawPlayers', this.playersToArray());
   }
 
-  updateGameState () {
-
-  }
-
+  /**
+   * Convierte el estado de los jugadores a un array de objetos
+   * @returns {Array} Array de objetos representando a los jugadores
+   */
   playersToArray () {
     return this.players.map((player) => player.toObject());
   }
 
-  // Método para obtener el estado del juego
+  /**
+   * Obtiene el estado del juego
+   * @returns {boolean} True si el juego está en curso, false en caso contrario
+   */
   getState () {
     return this.isRunning;
   }

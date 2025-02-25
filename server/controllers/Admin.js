@@ -2,15 +2,21 @@ import Game from './Game.js';
 import WebSocketHandler from './WebSocketHandler.js';
 
 export class Admin {
+  /**
+   * Configura el juego con los ajustes proporcionados
+   * @param {Object} settings - Configuraciones del juego
+   */
   static configureGame (settings) {
-    console.log('Configurando juego:', settings);
     Game.configureMap(settings);
     WebSocketHandler.broadcast('mapUpdated', settings);
     WebSocketHandler.broadcast('setPyramid', settings.pisos);
   }
 
+  /**
+   * Inicia el juego
+   * Verifica si el mapa está configurado antes de iniciar el juego
+   */
   static startGame () {
-    // console.log('Iniciando juego desde Admin');
     if (!Game.map) {
       console.error('El mapa no está configurado');
       return;
@@ -19,8 +25,10 @@ export class Admin {
     Game.start();
   }
 
+  /**
+   * Detiene el juego
+   */
   static stopGame () {
-    console.log('Deteniendo juego');
     Game.stop();
   }
 }

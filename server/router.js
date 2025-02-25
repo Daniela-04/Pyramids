@@ -10,17 +10,30 @@ const __dirname = path.dirname(__filename);
 export class RouterConfig {
   static router = express.Router();
 
+  /**
+   * Inicializa el router
+   * Configura las rutas y el controlador de autenticación
+   * @returns {Router} El router configurado
+   */
   static init () {
     this.configureRoutes();
     AuthController.initialize();
     return this.router;
   }
 
+  /**
+   * Configura las rutas del router
+   * Llama a los métodos para configurar rutas GET y de autenticación
+   */
   static configureRoutes () {
     this.configureGetRoutes();
     this.configureAuthRoutes();
   }
 
+  /**
+   * Configura las rutas GET del router
+   * Define las rutas para servir archivos HTML
+   */
   static configureGetRoutes () {
     this.router.get('/', (req, res) => {
       res.sendFile(path.join(__dirname, '../client/index.html'));
@@ -40,6 +53,10 @@ export class RouterConfig {
     });
   }
 
+  /**
+   * Configura las rutas de autenticación del router
+   * Define las rutas para login y logout usando Passport
+   */
   static configureAuthRoutes () {
     this.router.get('/logout', (req, res, next) => {
       req.logout((err) => {
@@ -60,7 +77,12 @@ export class RouterConfig {
     });
   }
 
-  // Middleware para verificar si el usuario está autenticado
+  /**
+   * Middleware para verificar si el usuario está autenticado
+   * @param {Request} req - La solicitud HTTP
+   * @param {Response} res - La respuesta HTTP
+   * @param {Function} next - La función next para pasar al siguiente middleware
+   */
   static isAuthenticated (req, res, next) {
     if (req.isAuthenticated()) {
       return next();
