@@ -1,18 +1,16 @@
 import { Server } from 'socket.io';
+import app from '../server.js';
 import configs from '../../configs.js';
 import { createServer } from 'http';
 // importo el modulo Game para el estado del juego
 import Game from './Game.js';
 
 export default class WebSocketHandler {
-  static #httpServer;
   static #io;
   static #eventListeners = new Map();
 
   static init () {
-    this.#httpServer = createServer();
-    this.#io = new Server(this.#httpServer, { cors: { origin: '*' } });
-    this.#httpServer.listen(configs.socketPort);
+    this.#io = new Server(app, { cors: { origin: '*' } });
     this.handleConnection();
   }
 
@@ -40,12 +38,10 @@ export default class WebSocketHandler {
     });
 
     socket.on('inicializeMap', (settings) => {
-      // console.log('Admin configuró el mapa:', settings);
       this.#emitEvent('configureGame', settings);
     });
 
     socket.on('join', (role) => {
-      console.log(`Cliente ${socket.id} se ha unido como ${role}`);
       if (role === 'player') {
         // Enviamos el estado del juego a los nuevos jugadores
         if (Game.getState()) {
@@ -54,21 +50,17 @@ export default class WebSocketHandler {
           this.#emitEvent('join', socket.id, socket);
         }
       }
-      // console.log(this.#eventListeners);
     });
 
     socket.on('move', (coords) => {
       this.#emitEvent('move', coords, socket);
-      // console.log(`Cliente ${socket.id} se ha movido hacia ${coords.x}, ${coords.y}`);
     });
 
     socket.on('recoger', (data) => {
-      console.log(`Cliente ${data.playerId} ha recogido la piedra ${data.brickId}`);
       this.#emitEvent('recoger', data);
     });
 
     socket.on('soltar', (data) => {
-      console.log(`Cliente ${data.playerId} ha soltado la piedra en (${data.x}, ${data.y})`);
       this.#emitEvent('soltar', data);
     });
 

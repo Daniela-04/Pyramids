@@ -21,7 +21,7 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
         errorContainer.removeAttribute('hidden');
       }
     } catch (error) {
-      console.log(error);
+      console.log('error de login');
     }
   } else {
     const error = "Inicia amb l'email del sapa";

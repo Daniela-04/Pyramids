@@ -121,9 +121,7 @@ socket.on('drawPlayers', (players) => {
 
 socket.on('newStone', (data) => {
   const { currentStones, remainingLevels, team } = data;
-  console.log(data);
   const piramide = team === 'purple' ? piramide1 : piramide2;
-  console.log(`#ladrillo_F${remainingLevels}-${currentStones}`);
 
   piramide.querySelector(`#ladrillo_F${remainingLevels}-${currentStones}`).classList.remove('gray');
 });
@@ -139,7 +137,6 @@ function drawPlayers (players) {
     let playerElement = existingPlayers.get(player.id);
     let teamColor = player.team === 'blue' ? '../assets/img/player.png' : '../assets/img/player2.png';
     if (player.hasStone) {
-      console.log('Tiene piedra');
       teamColor = player.team === 'blue' ? '../assets/img/player_stone.png' : '../assets/img/player2_stone.png';
     }
 
