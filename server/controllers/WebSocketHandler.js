@@ -1,5 +1,5 @@
 import { Server } from 'socket.io';
-import app from '../server.js';
+import {Server as app } from '../server.js';
 import configs from '../../configs.js';
 import { createServer } from 'http';
 // importo el modulo Game para el estado del juego
@@ -11,7 +11,7 @@ export default class WebSocketHandler {
   static #eventListeners = new Map();
 
   static init () {
-    this.#httpServer = createServer(app);
+    this.#httpServer = createServer(app.getApp());
     this.#io = new Server(this.#httpServer, { cors: { origin: '*' } });
     this.handleConnection();
   }
