@@ -11,6 +11,7 @@ Nos dieron una semana para llevar a cabo todo.
 ![Menu de selección de rol](assets/SeleccionRol.png)
 ![vista de administrador](assets/vistaAdmin.png)
 ![vista de jugador](assets/vistaJugador.png)
+![construir una piramide](assets/buildPyramid.gif)
 
 ## 📌 Funcionalidades implementadas por mi
 
@@ -21,7 +22,7 @@ Nos dieron una semana para llevar a cabo todo.
 - Autenticación con google (aunque ha sido desactivada en este fork)
 
 > [!IMPORTANT]  
-> Al ser un proyecto pensado para que solo las personas con el correo de la institucion puedan jugar, he decidido que deshabilitar la autenticacion.
+> Al ser un proyecto pensado para que solo las personas con el correo de la institucion puedan jugar, he decidido deshabilitar la autenticacion.
 > Para poder jugar con mas personas es necesaria una red lan como la de hamachi
 
 
