@@ -1,7 +1,7 @@
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { AuthController } from './controllers/AuthController.js';
+// import { AuthController } from './controllers/AuthController.js';
 import passport from 'passport';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -17,7 +17,7 @@ export class RouterConfig {
    */
   static init () {
     this.configureRoutes();
-    AuthController.initialize();
+    // AuthController.initialize();
     return this.router;
   }
 
@@ -27,7 +27,7 @@ export class RouterConfig {
    */
   static configureRoutes () {
     this.configureGetRoutes();
-    this.configureAuthRoutes();
+    // this.configureAuthRoutes();
   }
 
   /**
@@ -38,17 +38,17 @@ export class RouterConfig {
     this.router.get('/', (req, res) => {
       res.sendFile(path.join(__dirname, '../client/index.html'));
     });
-    this.router.get('/choose', RouterConfig.isAuthenticated, (req, res) => {
+    this.router.get('/choose', (req, res) => {
       res.sendFile(path.join(__dirname, '../client/html/seleccio_rol.html'));
     });
-    this.router.get('/player', RouterConfig.isAuthenticated, (req, res) => {
+    this.router.get('/player', (req, res) => {
       res.sendFile(path.join(__dirname, '../client/html/player.html'));
     });
 
-    this.router.get('/admin', RouterConfig.isAuthenticated, (req, res) => {
+    this.router.get('/admin', (req, res) => {
       res.sendFile(path.join(__dirname, '../client/html/admin.html'));
     });
-    this.router.get('/lobby', RouterConfig.isAuthenticated, (req, res) => {
+    this.router.get('/lobby', (req, res) => {
       res.sendFile(path.join(__dirname, '../client/html/lobby.html'));
     });
   }

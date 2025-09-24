@@ -1,6 +1,6 @@
 
 const configs = {
-  hamachiIP: '25.27.223.194',
+  hamachiIP: '',
   port: 8080,
   host: 'localhost',
   socketPort: 8180,

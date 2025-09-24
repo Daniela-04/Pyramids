@@ -5,9 +5,9 @@ import path, { dirname } from 'path';
 import WebSocketHandler from './controllers/WebSocketHandler.js';
 import Game from './controllers/Game.js';
 import { fileURLToPath } from 'url';
-import session from 'express-session';
+// import session from 'express-session';
 import dotenv from 'dotenv';
-import passport from 'passport';
+// import passport from 'passport';
 
 dotenv.config();
 
@@ -44,14 +44,14 @@ export class Server {
     this.app.use(express.static(this.publicPath));
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
-    this.app.use(session({
-      secret: process.env.SESSION_SECRET,
-      resave: false,
-      saveUninitialized: true,
-      cookie: { secure: false, expires: null, maxAge: null }
-    }));
-    this.app.use(passport.initialize());
-    this.app.use(passport.session());
+    // this.app.use(session({
+    //   secret: process.env.SESSION_SECRET,
+    //   resave: false,
+    //   saveUninitialized: true,
+    //   cookie: { secure: false, expires: null, maxAge: null }
+    // }));
+    // this.app.use(passport.initialize());
+    // this.app.use(passport.session());
   }
 
   /**
